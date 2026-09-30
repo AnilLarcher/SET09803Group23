@@ -7,3 +7,4 @@
 - Aviel Leiva
 - Carmita Sosa
 - Yuen Lin
+- Shevanise Givans
