@@ -25,3 +25,5 @@ All members should behave professionally when communicating with teammates, univ
 Team Commitment
 All team members agree to follow this Code of Conduct and to work together to create a positive learning environment. If a problem occurs, we will communicate openly, address the issue professionally, and work together to find a solution.
 Our team will focus on collaboration, honesty, respect, continuous improvement, and the successful completion of our project.
+
+Author: Carmita Sosa
