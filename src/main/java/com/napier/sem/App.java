@@ -15,15 +15,26 @@ public class App
     {
         App app = new App();
 
-        app.connect();
+        // Inside Docker the Dockerfile passes "db:3306 30000"; from IntelliJ use the exposed port
+        if (args.length < 2)
+        {
+            app.connect("localhost:3307", 0);
+        }
+        else
+        {
+            app.connect(args[0], Integer.parseInt(args[1]));
+        }
 
         app.disconnect();
     }
 
     /**
      * Connect to the MySQL database.
+     *
+     * @param location host:port of the database
+     * @param delay    milliseconds to wait before each connection attempt
      */
-    public void connect()
+    public void connect(String location, int delay)
     {
         try
         {
@@ -43,9 +54,9 @@ public class App
             try
             {
                 // Wait a bit for db to start
-                Thread.sleep(30000);
+                Thread.sleep(delay);
                 // Connect to database
-                con = DriverManager.getConnection("jdbc:mysql://db:3306/world?useSSL=false&allowPublicKeyRetrieval=true", "root", "example");
+                con = DriverManager.getConnection("jdbc:mysql://" + location + "/world?useSSL=false&allowPublicKeyRetrieval=true", "root", "example");
                 System.out.println("Successfully connected");
                 break;
             }
