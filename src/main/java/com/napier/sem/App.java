@@ -170,7 +170,7 @@ public class App
     public List<City> getAllCities()
     {
         try (Statement stmt = con.createStatement();
-             ResultSet rset = stmt.executeQuery("SELECT ID, Name, CountryCode, District, Population FROM city"))
+             ResultSet rset = stmt.executeQuery("SELECT ID, Name, CountryCode, District, Population FROM City")) /** Still works, intelliJ cannot see into the database  **/
         {
             List<City> cities = new ArrayList<>();
             while (rset.next())
@@ -202,7 +202,7 @@ public class App
         try (Statement stmt = con.createStatement();
              ResultSet rset = stmt.executeQuery(
                      "SELECT Code, Name, Continent, Region, SurfaceArea, IndepYear, Population, LifeExpectancy, "
-                             + "GNP, GNPOld, LocalName, GovernmentForm, HeadOfState, Capital, Code2 FROM country"))
+                             + "GNP, GNPOld, LocalName, GovernmentForm, HeadOfState, Capital, Code2 FROM country")) /** Still works, intelliJ cannot see into the database  **/
         {
             List<Country> countries = new ArrayList<>();
             while (rset.next())
@@ -243,7 +243,7 @@ public class App
     public List<CountryLanguage> getAllCountryLanguages()
     {
         try (Statement stmt = con.createStatement();
-             ResultSet rset = stmt.executeQuery("SELECT CountryCode, Language, IsOfficial, Percentage FROM countrylanguage"))
+             ResultSet rset = stmt.executeQuery("SELECT CountryCode, Language, IsOfficial, Percentage FROM countrylanguage")) /** Still works, intelliJ cannot see into the database  **/
         {
             List<CountryLanguage> languages = new ArrayList<>();
             while (rset.next())
