@@ -2,6 +2,7 @@ package com.napier.sem;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -63,6 +64,7 @@ public class App
             }
             System.out.println((TABLES.length + 1) + ". Show all tables");
             System.out.println((TABLES.length + 2) + ". Show world population");
+            System.out.println((TABLES.length + 3) + ". Show selected country population");
             System.out.println("0. Exit");
             System.out.print("Choose an option: ");
 
@@ -103,6 +105,10 @@ public class App
             else if (option == TABLES.length + 2)
             {
                 printWorldPopulation();
+            }
+            else if (option == TABLES.length + 3)
+            {
+                promptAndPrintCountryPopulation(in);
             }
             else
             {
@@ -195,6 +201,62 @@ public class App
         catch (SQLException e)
         {
             System.out.println("Failed to get world population");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Ask for a country and print its population.
+     *
+     * @param in menu scanner
+     */
+    private void promptAndPrintCountryPopulation(Scanner in)
+    {
+        System.out.print("Enter country code or name: ");
+        if (!in.hasNextLine())
+        {
+            System.out.println();
+            return;
+        }
+
+        printCountryPopulation(in.nextLine());
+    }
+
+    /**
+     * Print the population for one selected country.
+     *
+     * @param countrySelection country code or country name
+     */
+    public void printCountryPopulation(String countrySelection)
+    {
+        String selection = countrySelection == null ? "" : countrySelection.trim();
+        if (selection.isEmpty())
+        {
+            System.out.println("Country selection cannot be empty");
+            return;
+        }
+
+        String sql = "SELECT Name, Population FROM country WHERE Code = UPPER(?) OR Name = ? LIMIT 1";
+        try (PreparedStatement stmt = con.prepareStatement(sql))
+        {
+            stmt.setString(1, selection);
+            stmt.setString(2, selection);
+            try (ResultSet rset = stmt.executeQuery())
+            {
+                if (rset.next())
+                {
+                    System.out.println("Country Population - " + rset.getString("Name") + ": "
+                            + rset.getLong("Population"));
+                }
+                else
+                {
+                    System.out.println("No country found for selection: " + selection);
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Failed to get selected country population");
             System.out.println(e.getMessage());
         }
     }
