@@ -65,6 +65,7 @@ public class App
             System.out.println((TABLES.length + 1) + ". Show all tables");
             System.out.println((TABLES.length + 2) + ". Show world population");
             System.out.println((TABLES.length + 3) + ". Show selected country population");
+            System.out.println((TABLES.length + 4) + ". Show selected continent population");
             System.out.println("0. Exit");
             System.out.print("Choose an option: ");
 
@@ -109,6 +110,10 @@ public class App
             else if (option == TABLES.length + 3)
             {
                 promptAndPrintCountryPopulation(in);
+            }
+            else if (option == TABLES.length + 4)
+            {
+                promptAndPrintContinentPopulation(in);
             }
             else
             {
@@ -257,6 +262,62 @@ public class App
         catch (SQLException e)
         {
             System.out.println("Failed to get selected country population");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Ask for a continent and print its population.
+     *
+     * @param in menu scanner
+     */
+    private void promptAndPrintContinentPopulation(Scanner in)
+    {
+        System.out.print("Enter continent: ");
+        if (!in.hasNextLine())
+        {
+            System.out.println();
+            return;
+        }
+
+        printContinentPopulation(in.nextLine());
+    }
+
+    /**
+     * Print the population for one selected continent.
+     *
+     * @param continentSelection continent name
+     */
+    public void printContinentPopulation(String continentSelection)
+    {
+        String selection = continentSelection == null ? "" : continentSelection.trim();
+        if (selection.isEmpty())
+        {
+            System.out.println("Continent selection cannot be empty");
+            return;
+        }
+
+        String sql = "SELECT COUNT(*) AS CountryCount, SUM(Population) AS ContinentPopulation "
+                + "FROM country WHERE Continent = ?";
+        try (PreparedStatement stmt = con.prepareStatement(sql))
+        {
+            stmt.setString(1, selection);
+            try (ResultSet rset = stmt.executeQuery())
+            {
+                if (rset.next() && rset.getLong("CountryCount") > 0)
+                {
+                    System.out.println("Continent Population - " + selection + ": "
+                            + rset.getLong("ContinentPopulation"));
+                }
+                else
+                {
+                    System.out.println("No continent found for selection: " + selection);
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Failed to get selected continent population");
             System.out.println(e.getMessage());
         }
     }
