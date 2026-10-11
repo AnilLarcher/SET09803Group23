@@ -62,6 +62,7 @@ public class App
                 System.out.println((i + 1) + ". Show all " + TABLES[i] + " data");
             }
             System.out.println((TABLES.length + 1) + ". Show all tables");
+            System.out.println((TABLES.length + 2) + ". Show world population");
             System.out.println("0. Exit");
             System.out.print("Choose an option: ");
 
@@ -98,6 +99,10 @@ public class App
                 {
                     printTable(table);
                 }
+            }
+            else if (option == TABLES.length + 2)
+            {
+                printWorldPopulation();
             }
             else
             {
@@ -158,6 +163,38 @@ public class App
         catch (SQLException e)
         {
             System.out.println("Failed to get " + table + " data");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Print the total world population from the country table.
+     */
+    public void printWorldPopulation()
+    {
+        try (Statement stmt = con.createStatement();
+             ResultSet rset = stmt.executeQuery("SELECT SUM(Population) AS WorldPopulation FROM country"))
+        {
+            if (rset.next())
+            {
+                long worldPopulation = rset.getLong("WorldPopulation");
+                if (rset.wasNull())
+                {
+                    System.out.println("World Population: no country data available");
+                }
+                else
+                {
+                    System.out.println("World Population: " + worldPopulation);
+                }
+            }
+            else
+            {
+                System.out.println("World Population: no country data available");
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Failed to get world population");
             System.out.println(e.getMessage());
         }
     }
