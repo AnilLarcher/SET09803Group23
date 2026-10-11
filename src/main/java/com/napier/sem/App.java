@@ -66,6 +66,7 @@ public class App
             System.out.println((TABLES.length + 2) + ". Show world population");
             System.out.println((TABLES.length + 3) + ". Show selected country population");
             System.out.println((TABLES.length + 4) + ". Show selected continent population");
+            System.out.println((TABLES.length + 5) + ". Show selected region population");
             System.out.println("0. Exit");
             System.out.print("Choose an option: ");
 
@@ -114,6 +115,10 @@ public class App
             else if (option == TABLES.length + 4)
             {
                 promptAndPrintContinentPopulation(in);
+            }
+            else if (option == TABLES.length + 5)
+            {
+                promptAndPrintRegionPopulation(in);
             }
             else
             {
@@ -318,6 +323,62 @@ public class App
         catch (SQLException e)
         {
             System.out.println("Failed to get selected continent population");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Ask for a region and print its population.
+     *
+     * @param in menu scanner
+     */
+    private void promptAndPrintRegionPopulation(Scanner in)
+    {
+        System.out.print("Enter region: ");
+        if (!in.hasNextLine())
+        {
+            System.out.println();
+            return;
+        }
+
+        printRegionPopulation(in.nextLine());
+    }
+
+    /**
+     * Print the population for one selected region.
+     *
+     * @param regionSelection region name
+     */
+    public void printRegionPopulation(String regionSelection)
+    {
+        String selection = regionSelection == null ? "" : regionSelection.trim();
+        if (selection.isEmpty())
+        {
+            System.out.println("Region selection cannot be empty");
+            return;
+        }
+
+        String sql = "SELECT COUNT(*) AS CountryCount, SUM(Population) AS RegionPopulation "
+                + "FROM country WHERE Region = ?";
+        try (PreparedStatement stmt = con.prepareStatement(sql))
+        {
+            stmt.setString(1, selection);
+            try (ResultSet rset = stmt.executeQuery())
+            {
+                if (rset.next() && rset.getLong("CountryCount") > 0)
+                {
+                    System.out.println("Region Population - " + selection + ": "
+                            + rset.getLong("RegionPopulation"));
+                }
+                else
+                {
+                    System.out.println("No region found for selection: " + selection);
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Failed to get selected region population");
             System.out.println(e.getMessage());
         }
     }
