@@ -68,6 +68,7 @@ public class App
             System.out.println((TABLES.length + 4) + ". Show selected continent population");
             System.out.println((TABLES.length + 5) + ". Show selected region population");
             System.out.println((TABLES.length + 6) + ". Show all countries by population");
+            System.out.println((TABLES.length + 7) + ". Show countries in a continent by population");
             System.out.println("0. Exit");
             System.out.print("Choose an option: ");
 
@@ -124,6 +125,10 @@ public class App
             else if (option == TABLES.length + 6)
             {
                 printAllCountriesByPopulation();
+            }
+            else if (option == TABLES.length + 7)
+            {
+                promptAndPrintCountriesByContinent(in);
             }
             else
             {
@@ -405,6 +410,69 @@ public class App
         catch (SQLException e)
         {
             System.out.println("Failed to get countries by population");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Ask for a continent and print matching countries ordered by population.
+     *
+     * @param in menu scanner
+     */
+    private void promptAndPrintCountriesByContinent(Scanner in)
+    {
+        System.out.print("Enter continent: ");
+        if (!in.hasNextLine())
+        {
+            System.out.println();
+            return;
+        }
+
+        printCountriesByContinentPopulation(in.nextLine());
+    }
+
+    /**
+     * Print countries in one continent ordered by population from largest to smallest.
+     *
+     * @param continentSelection continent name
+     */
+    public void printCountriesByContinentPopulation(String continentSelection)
+    {
+        String selection = continentSelection == null ? "" : continentSelection.trim();
+        if (selection.isEmpty())
+        {
+            System.out.println("Continent selection cannot be empty");
+            return;
+        }
+
+        String countSql = "SELECT COUNT(*) AS CountryCount FROM country WHERE Continent = ?";
+        String reportSql = "SELECT country.Code AS Code, country.Name AS Name, country.Continent AS Continent, "
+                + "country.Region AS Region, country.Population AS Population, city.Name AS Capital "
+                + "FROM country LEFT JOIN city ON country.Capital = city.ID "
+                + "WHERE country.Continent = ? "
+                + "ORDER BY country.Population DESC";
+        try (PreparedStatement countStmt = con.prepareStatement(countSql);
+             PreparedStatement reportStmt = con.prepareStatement(reportSql))
+        {
+            countStmt.setString(1, selection);
+            try (ResultSet countRset = countStmt.executeQuery())
+            {
+                if (!countRset.next() || countRset.getLong("CountryCount") == 0)
+                {
+                    System.out.println("No countries found for continent: " + selection);
+                    return;
+                }
+            }
+
+            reportStmt.setString(1, selection);
+            try (ResultSet reportRset = reportStmt.executeQuery())
+            {
+                printReportRows("Countries in " + selection + " by Population", reportRset);
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Failed to get countries in selected continent by population");
             System.out.println(e.getMessage());
         }
     }
