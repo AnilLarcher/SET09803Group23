@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.napier.sem</groupId>
-    <artifactId>sql-db-test</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>sql-db-g23</artifactId>
+    <version>1.1-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
