@@ -532,7 +532,7 @@ public class App
     public List<City> getAllCities()
     {
         try (Statement stmt = con.createStatement();
-             ResultSet rset = stmt.executeQuery("SELECT ID, Name, CountryCode, District, Population FROM City")) /** Still works, intelliJ cannot see into the database  **/
+             ResultSet rset = stmt.executeQuery("SELECT ID, Name, CountryCode, District, Population FROM world.city")) /** Still works, intelliJ cannot see into the database  **/
         {
             List<City> cities = new ArrayList<>();
             while (rset.next())
