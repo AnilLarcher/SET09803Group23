@@ -2,6 +2,7 @@ package com.napier.sem;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -62,6 +63,11 @@ public class App
                 System.out.println((i + 1) + ". Show all " + TABLES[i] + " data");
             }
             System.out.println((TABLES.length + 1) + ". Show all tables");
+            System.out.println((TABLES.length + 2) + ". Show world population");
+            System.out.println((TABLES.length + 3) + ". Show selected country population");
+            System.out.println((TABLES.length + 4) + ". Show selected continent population");
+            System.out.println((TABLES.length + 5) + ". Show selected region population");
+            System.out.println((TABLES.length + 6) + ". Show all countries by population");
             System.out.println("0. Exit");
             System.out.print("Choose an option: ");
 
@@ -98,6 +104,26 @@ public class App
                 {
                     printTable(table);
                 }
+            }
+            else if (option == TABLES.length + 2)
+            {
+                printWorldPopulation();
+            }
+            else if (option == TABLES.length + 3)
+            {
+                promptAndPrintCountryPopulation(in);
+            }
+            else if (option == TABLES.length + 4)
+            {
+                promptAndPrintContinentPopulation(in);
+            }
+            else if (option == TABLES.length + 5)
+            {
+                promptAndPrintRegionPopulation(in);
+            }
+            else if (option == TABLES.length + 6)
+            {
+                printAllCountriesByPopulation();
             }
             else
             {
@@ -159,6 +185,274 @@ public class App
         {
             System.out.println("Failed to get " + table + " data");
             System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Print the total world population from the country table.
+     */
+    public void printWorldPopulation()
+    {
+        try (Statement stmt = con.createStatement();
+             ResultSet rset = stmt.executeQuery("SELECT SUM(Population) AS WorldPopulation FROM country"))
+        {
+            if (rset.next())
+            {
+                long worldPopulation = rset.getLong("WorldPopulation");
+                if (rset.wasNull())
+                {
+                    System.out.println("World Population: no country data available");
+                }
+                else
+                {
+                    System.out.println("World Population: " + worldPopulation);
+                }
+            }
+            else
+            {
+                System.out.println("World Population: no country data available");
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Failed to get world population");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Ask for a country and print its population.
+     *
+     * @param in menu scanner
+     */
+    private void promptAndPrintCountryPopulation(Scanner in)
+    {
+        System.out.print("Enter country code or name: ");
+        if (!in.hasNextLine())
+        {
+            System.out.println();
+            return;
+        }
+
+        printCountryPopulation(in.nextLine());
+    }
+
+    /**
+     * Print the population for one selected country.
+     *
+     * @param countrySelection country code or country name
+     */
+    public void printCountryPopulation(String countrySelection)
+    {
+        String selection = countrySelection == null ? "" : countrySelection.trim();
+        if (selection.isEmpty())
+        {
+            System.out.println("Country selection cannot be empty");
+            return;
+        }
+
+        String sql = "SELECT Name, Population FROM country WHERE Code = UPPER(?) OR Name = ? LIMIT 1";
+        try (PreparedStatement stmt = con.prepareStatement(sql))
+        {
+            stmt.setString(1, selection);
+            stmt.setString(2, selection);
+            try (ResultSet rset = stmt.executeQuery())
+            {
+                if (rset.next())
+                {
+                    System.out.println("Country Population - " + rset.getString("Name") + ": "
+                            + rset.getLong("Population"));
+                }
+                else
+                {
+                    System.out.println("No country found for selection: " + selection);
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Failed to get selected country population");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Ask for a continent and print its population.
+     *
+     * @param in menu scanner
+     */
+    private void promptAndPrintContinentPopulation(Scanner in)
+    {
+        System.out.print("Enter continent: ");
+        if (!in.hasNextLine())
+        {
+            System.out.println();
+            return;
+        }
+
+        printContinentPopulation(in.nextLine());
+    }
+
+    /**
+     * Print the population for one selected continent.
+     *
+     * @param continentSelection continent name
+     */
+    public void printContinentPopulation(String continentSelection)
+    {
+        String selection = continentSelection == null ? "" : continentSelection.trim();
+        if (selection.isEmpty())
+        {
+            System.out.println("Continent selection cannot be empty");
+            return;
+        }
+
+        String sql = "SELECT COUNT(*) AS CountryCount, SUM(Population) AS ContinentPopulation "
+                + "FROM country WHERE Continent = ?";
+        try (PreparedStatement stmt = con.prepareStatement(sql))
+        {
+            stmt.setString(1, selection);
+            try (ResultSet rset = stmt.executeQuery())
+            {
+                if (rset.next() && rset.getLong("CountryCount") > 0)
+                {
+                    System.out.println("Continent Population - " + selection + ": "
+                            + rset.getLong("ContinentPopulation"));
+                }
+                else
+                {
+                    System.out.println("No continent found for selection: " + selection);
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Failed to get selected continent population");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Ask for a region and print its population.
+     *
+     * @param in menu scanner
+     */
+    private void promptAndPrintRegionPopulation(Scanner in)
+    {
+        System.out.print("Enter region: ");
+        if (!in.hasNextLine())
+        {
+            System.out.println();
+            return;
+        }
+
+        printRegionPopulation(in.nextLine());
+    }
+
+    /**
+     * Print the population for one selected region.
+     *
+     * @param regionSelection region name
+     */
+    public void printRegionPopulation(String regionSelection)
+    {
+        String selection = regionSelection == null ? "" : regionSelection.trim();
+        if (selection.isEmpty())
+        {
+            System.out.println("Region selection cannot be empty");
+            return;
+        }
+
+        String sql = "SELECT COUNT(*) AS CountryCount, SUM(Population) AS RegionPopulation "
+                + "FROM country WHERE Region = ?";
+        try (PreparedStatement stmt = con.prepareStatement(sql))
+        {
+            stmt.setString(1, selection);
+            try (ResultSet rset = stmt.executeQuery())
+            {
+                if (rset.next() && rset.getLong("CountryCount") > 0)
+                {
+                    System.out.println("Region Population - " + selection + ": "
+                            + rset.getLong("RegionPopulation"));
+                }
+                else
+                {
+                    System.out.println("No region found for selection: " + selection);
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Failed to get selected region population");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Print all countries ordered by population from largest to smallest.
+     */
+    public void printAllCountriesByPopulation()
+    {
+        String sql = "SELECT country.Code AS Code, country.Name AS Name, country.Continent AS Continent, "
+                + "country.Region AS Region, country.Population AS Population, city.Name AS Capital "
+                + "FROM country LEFT JOIN city ON country.Capital = city.ID "
+                + "ORDER BY country.Population DESC";
+        try (PreparedStatement stmt = con.prepareStatement(sql);
+             ResultSet rset = stmt.executeQuery())
+        {
+            printReportRows("Countries by Population", rset);
+        }
+        catch (SQLException e)
+        {
+            System.out.println("Failed to get countries by population");
+            System.out.println(e.getMessage());
+        }
+    }
+
+    /**
+     * Print result-set rows with aligned columns.
+     *
+     * @param title report title
+     * @param rset result set to print
+     */
+    private void printReportRows(String title, ResultSet rset) throws SQLException
+    {
+        ResultSetMetaData meta = rset.getMetaData();
+        int cols = meta.getColumnCount();
+
+        List<String[]> rows = new ArrayList<>();
+        int[] widths = new int[cols];
+        String[] header = new String[cols];
+        for (int c = 0; c < cols; ++c)
+        {
+            header[c] = meta.getColumnLabel(c + 1);
+            widths[c] = header[c].length();
+        }
+        while (rset.next())
+        {
+            String[] row = new String[cols];
+            for (int c = 0; c < cols; ++c)
+            {
+                String value = rset.getString(c + 1);
+                row[c] = value == null ? "NULL" : value;
+                widths[c] = Math.max(widths[c], row[c].length());
+            }
+            rows.add(row);
+        }
+
+        StringBuilder format = new StringBuilder();
+        for (int w : widths)
+        {
+            format.append("%-").append(w).append("s  ");
+        }
+        format.append("%n");
+
+        System.out.println();
+        System.out.println("=== " + title + " (" + rows.size() + " rows) ===");
+        System.out.printf(format.toString(), (Object[]) header);
+        for (String[] row : rows)
+        {
+            System.out.printf(format.toString(), (Object[]) row);
         }
     }
 
