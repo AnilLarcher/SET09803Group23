@@ -5,7 +5,7 @@
 Verify that the application image can be built and run in Docker for issue #24.
 
 Test environment
-- Tester: Shevanise Givans aka Shev
+- Tester: Shevanise Givans
 - Test date: 12 October 2026
 - Tested commit: 00f61e4
 - Branch: feature/24-docker-build-run
