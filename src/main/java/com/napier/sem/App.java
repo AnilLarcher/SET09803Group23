@@ -676,7 +676,7 @@ public class App
                 // Wait a bit for db to start
                 Thread.sleep(delay);
                 // Connect to database
-                con = DriverManager.getConnection("jdbc:mysql://" + location + "/world?useSSL=false&allowPublicKeyRetrieval=true", "root", "example");
+                con = DriverManager.getConnection("jdbc:mysql://" + location + "/world?useSSL=false&allowPublicKeyRetrieval=true", "root", "Gr0up23@DATAbase");
                 System.out.println("Successfully connected");
                 break;
             }
