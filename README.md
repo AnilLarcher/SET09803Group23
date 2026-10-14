@@ -1,8 +1,8 @@
 ## SET09803 Coursework Group 23
-* Master Build Status ![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/Calixte-Williams/set08803_gw/main.yml?branch=master)
-* Develop Branch Status ![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/Calixte-Williams/set08803_gw/main.yml?branch=develop)
-* License [![LICENSE](https://img.shields.io/github/license/Calixte-Williams/set08803_gw.svg?style=flat-square)](https://github.com/Calixte-Williams/set08803_gw/blob/master/LICENSE)
-* Release [![Releases](https://img.shields.io/github/release/Calixte-Williams/set08803_gw/all.svg?style=flat-square)](https://github.com/Calixte-Williams/set08803_gw/releases)
+* Master Build Status ![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/AnilLarcher/SET09803Group23/main.yml?branch=main)
+* Develop Branch Status ![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/AnilLarcher/SET09803Group23/main.yml?branch=develop)
+* License [![LICENSE](https://img.shields.io/github/license/AnilLarcher/SET09803Group23.svg?style=flat-square)](https://github.com/Calixte-Williams/set08803_gw/blob/master/LICENSE)
+* Release [![Releases](https://img.shields.io/github/release/AnilLarcher/SET09803Group23/all.svg?style=flat-square)](https://github.com/Calixte-Williams/set08803_gw/releases)
 
 ## Group Members 
 - Antoine Arthurs
