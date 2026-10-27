@@ -25,7 +25,7 @@ public class App
         // Inside Docker the Dockerfile passes "db:3306 30000"; from IntelliJ use the exposed port
         if (args.length < 2)
         {
-            app.connect("localhost:3307", 0);
+            app.connect("localhost:3307", 1000);
         }
         else
         {
@@ -36,6 +36,102 @@ public class App
 
         app.disconnect();
     }
+
+    //Method to get countries by population
+    app.getCountriesBypopulation();
+
+    //Method to get top N populated countries in the world
+    app.getTopNCountriesInWorldByPopulation(5);
+
+    //Method to get top N populated countries in a continent
+    app.getTopNCountriesInContinentByPop(5, "Asia");
+
+    //Method to get top N populated countries in a region
+    app.getTopNCountriesInRegionByPop(10, "Caribbean");
+
+    //Method to display countries by population in continent
+    app.getCountriesInContByPop("North America");
+
+    //Method to display countries by population in region
+    app.getCountriesInRegionByPop("Caribbean");
+
+    //Method to display cities in the world by population
+    app.getCitiesByPop();
+
+    //Method to display cities in the world by population in a continent
+    app.getCitiesByPopinAContinent("Europe");
+
+    //Method to display cities in the world by population in a region
+    app.getCitiesbyPopinARegion("Caribbean");
+
+    //Method to display cities in the world by population in a country
+    app.getCitiesbyPopinACountry("Antigua");
+
+    //Method to display cities in the world by population in a district
+    app.getCitiesbyPopinaDistrict("George Town");
+
+    //Method to display top N cities in the world by population
+    app.getTopNCitiesbyPopinTheWorld(6);
+
+    //Method to display top N cities in a continent by population
+    app.getTopNCitiesbyPopinContinent(6, "Asia");
+
+    //Method to display top N cities in a region by population
+    app.getTopNCitiesbyPopinRegion(4, "Caribbean");
+
+    //Method to display top N cities in a country by population
+    app.getTopNCitiesbyPopinCountry(5, "Haiti");
+
+    //Method to display top N cities in a district by population
+    app.getTopNCitiesbyPopinDistrict(3, "Castries");
+
+    //Method to display capital cities in the world by population
+    app.getCapitalCities();
+
+    //Method to display capital cities in a continent by population
+    app.getCapitalCitiesinContinent("Europe");
+
+    //Method to display capital cities in a region by population
+    app.getCapitalCitiesinRegion("Caribbean");
+
+    //Method to display top N capital cities by population
+    app.getTopNCapitalCities(5);
+
+    //Method to display top N capital cities in a continent by population
+    app.getTopNCapitalCitiesinaContinent(5, "North America");
+
+    //Method to display top N capital cities in a region by population
+    app.getTopNCapitalCitiesinaRegion(3, "Caribbean");
+
+    //Method to display the population of people , living in cities , and not living in cities in each continent
+    app.getPopulationofPeopleinContinent();
+
+    //Method to display the population of people , living in cities , and not living in cities in each region
+    app.getPopulationofPeopleinRegion();
+
+    //Method to display the population of people , living in cities , and not living in cities in each country
+    app.getPopulationofPeopleinCountry();
+
+    //Method to display total world population
+    app.getTotalPopulation();
+
+    //Method to display total population of a continent
+    app.getTotalPopulationofContinent("Asia");
+
+    //Method to display total population of a region
+    app.getTotalPopulationofRegion("Caribbean");
+
+    //Method to display total population of a country
+    app.getTotalPopulationofCountry("Barbados");
+
+    //Method to display total population of a district
+    app.getTotalPopulationofDistrict("Castries");
+
+    //Method to display total population of a city
+    app.getTotalPopulationofCity("Georgetown");
+
+    //Method to display language speakers in the world
+    app.getLanguageSpeakers();
 
     /**
      * Tables in the world database that the menu can display.
