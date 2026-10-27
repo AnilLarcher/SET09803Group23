@@ -210,7 +210,7 @@ public class App
                 country.continent = rset.getString("country.continent");
                 country.region = rset.getString("country.region");
                 country.population = rset.getInt("country.population");
-                country.capital = rset.getString("capital_city");
+                country.capital = rset.getString("capital");
                 countryList.add(country);
             }
         } catch (Exception e) {
@@ -218,6 +218,25 @@ public class App
             System.out.println("Failed to get country details");
             return null;
         }
+
+        System.out.print("\n");
+
+        System.out.println("Countries Sorted by Population:");
+
+        System.out.print("\n");
+
+        // Print header
+        System.out.println(String.format("%-15s %-30s %-15s %-30s %-15s %-15s", "Code", "Name", "Continent", "Region", "Population", "Capital"));
+        // Print each country's details
+        for (Country country : countryList) {
+            String country_string =
+                    String.format("%-15s %-30s %-15s %-30s %-15s %-15s",
+                            country.code, country.name, country.continent, country.region, country.population, country.capital);
+            System.out.println(country_string);
+        }
+        return countryList;
+    }
+
 
 
     public void menu()
