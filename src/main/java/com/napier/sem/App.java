@@ -18,129 +18,208 @@ public class App
      */
     private Connection con = null;
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         App app = new App();
 
         // Inside Docker the Dockerfile passes "db:3306 30000"; from IntelliJ use the exposed port
-        if (args.length < 2)
-        {
+        if (args.length < 2) {
             app.connect("localhost:3307", 1000);
-        }
-        else
-        {
+        } else {
             app.connect(args[0], Integer.parseInt(args[1]));
         }
 
-        app.menu();
 
+        //Method to get countries by population
+        app.getCountriesBypopulation();
+
+        //Method to get top N populated countries in the world
+        app.getTopNCountriesInWorldByPopulation(5);
+
+        //Method to get top N populated countries in a continent
+        app.getTopNCountriesInContinentByPop(5, "Asia");
+
+        //Method to get top N populated countries in a region
+        app.getTopNCountriesInRegionByPop(10, "Caribbean");
+
+        //Method to display countries by population in continent
+        app.getCountriesInContByPop("North America");
+
+        //Method to display countries by population in region
+        app.getCountriesInRegionByPop("Caribbean");
+
+        //Method to display cities in the world by population
+        app.getCitiesByPop();
+
+        //Method to display cities in the world by population in a continent
+        app.getCitiesByPopinAContinent("Europe");
+
+        //Method to display cities in the world by population in a region
+        app.getCitiesbyPopinARegion("Caribbean");
+
+        //Method to display cities in the world by population in a country
+        app.getCitiesbyPopinACountry("Antigua");
+
+        //Method to display cities in the world by population in a district
+        app.getCitiesbyPopinaDistrict("George Town");
+
+        //Method to display top N cities in the world by population
+        app.getTopNCitiesbyPopinTheWorld(6);
+
+        //Method to display top N cities in a continent by population
+        app.getTopNCitiesbyPopinContinent(6, "Asia");
+
+        //Method to display top N cities in a region by population
+        app.getTopNCitiesbyPopinRegion(4, "Caribbean");
+
+        //Method to display top N cities in a country by population
+        app.getTopNCitiesbyPopinCountry(5, "Haiti");
+
+        //Method to display top N cities in a district by population
+        app.getTopNCitiesbyPopinDistrict(3, "Castries");
+
+        //Method to display capital cities in the world by population
+        app.getCapitalCities();
+
+        //Method to display capital cities in a continent by population
+        app.getCapitalCitiesinContinent("Europe");
+
+        //Method to display capital cities in a region by population
+        app.getCapitalCitiesinRegion("Caribbean");
+
+        //Method to display top N capital cities by population
+        app.getTopNCapitalCities(5);
+
+        //Method to display top N capital cities in a continent by population
+        app.getTopNCapitalCitiesinaContinent(5, "North America");
+
+        //Method to display top N capital cities in a region by population
+        app.getTopNCapitalCitiesinaRegion(3, "Caribbean");
+
+        //Method to display the population of people , living in cities , and not living in cities in each continent
+        app.getPopulationofPeopleinContinent();
+
+        //Method to display the population of people , living in cities , and not living in cities in each region
+        app.getPopulationofPeopleinRegion();
+
+        //Method to display the population of people , living in cities , and not living in cities in each country
+        app.getPopulationofPeopleinCountry();
+
+        //Method to display total world population
+        app.getTotalPopulation();
+
+        //Method to display total population of a continent
+        app.getTotalPopulationofContinent("Asia");
+
+        //Method to display total population of a region
+        app.getTotalPopulationofRegion("Caribbean");
+
+        //Method to display total population of a country
+        app.getTotalPopulationofCountry("Barbados");
+
+        //Method to display total population of a district
+        app.getTotalPopulationofDistrict("Castries");
+
+        //Method to display total population of a city
+        app.getTotalPopulationofCity("Georgetown");
+
+        //Method to display language speakers in the world
+        app.getLanguageSpeakers();
+
+        // Disconnect from database
         app.disconnect();
+
     }
 
-    //Method to get countries by population
-    app.getCountriesBypopulation();
 
-    //Method to get top N populated countries in the world
-    app.getTopNCountriesInWorldByPopulation(5);
-
-    //Method to get top N populated countries in a continent
-    app.getTopNCountriesInContinentByPop(5, "Asia");
-
-    //Method to get top N populated countries in a region
-    app.getTopNCountriesInRegionByPop(10, "Caribbean");
-
-    //Method to display countries by population in continent
-    app.getCountriesInContByPop("North America");
-
-    //Method to display countries by population in region
-    app.getCountriesInRegionByPop("Caribbean");
-
-    //Method to display cities in the world by population
-    app.getCitiesByPop();
-
-    //Method to display cities in the world by population in a continent
-    app.getCitiesByPopinAContinent("Europe");
-
-    //Method to display cities in the world by population in a region
-    app.getCitiesbyPopinARegion("Caribbean");
-
-    //Method to display cities in the world by population in a country
-    app.getCitiesbyPopinACountry("Antigua");
-
-    //Method to display cities in the world by population in a district
-    app.getCitiesbyPopinaDistrict("George Town");
-
-    //Method to display top N cities in the world by population
-    app.getTopNCitiesbyPopinTheWorld(6);
-
-    //Method to display top N cities in a continent by population
-    app.getTopNCitiesbyPopinContinent(6, "Asia");
-
-    //Method to display top N cities in a region by population
-    app.getTopNCitiesbyPopinRegion(4, "Caribbean");
-
-    //Method to display top N cities in a country by population
-    app.getTopNCitiesbyPopinCountry(5, "Haiti");
-
-    //Method to display top N cities in a district by population
-    app.getTopNCitiesbyPopinDistrict(3, "Castries");
-
-    //Method to display capital cities in the world by population
-    app.getCapitalCities();
-
-    //Method to display capital cities in a continent by population
-    app.getCapitalCitiesinContinent("Europe");
-
-    //Method to display capital cities in a region by population
-    app.getCapitalCitiesinRegion("Caribbean");
-
-    //Method to display top N capital cities by population
-    app.getTopNCapitalCities(5);
-
-    //Method to display top N capital cities in a continent by population
-    app.getTopNCapitalCitiesinaContinent(5, "North America");
-
-    //Method to display top N capital cities in a region by population
-    app.getTopNCapitalCitiesinaRegion(3, "Caribbean");
-
-    //Method to display the population of people , living in cities , and not living in cities in each continent
-    app.getPopulationofPeopleinContinent();
-
-    //Method to display the population of people , living in cities , and not living in cities in each region
-    app.getPopulationofPeopleinRegion();
-
-    //Method to display the population of people , living in cities , and not living in cities in each country
-    app.getPopulationofPeopleinCountry();
-
-    //Method to display total world population
-    app.getTotalPopulation();
-
-    //Method to display total population of a continent
-    app.getTotalPopulationofContinent("Asia");
-
-    //Method to display total population of a region
-    app.getTotalPopulationofRegion("Caribbean");
-
-    //Method to display total population of a country
-    app.getTotalPopulationofCountry("Barbados");
-
-    //Method to display total population of a district
-    app.getTotalPopulationofDistrict("Castries");
-
-    //Method to display total population of a city
-    app.getTotalPopulationofCity("Georgetown");
-
-    //Method to display language speakers in the world
-    app.getLanguageSpeakers();
 
     /**
-     * Tables in the world database that the menu can display.
+     * Connection to database
      */
-    private static final String[] TABLES = {"city", "country", "countrylanguage"};
+    public void connect(String location, int delay){
+        try {
+            Class.forName("com.mql.cj.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            System.out.println("Could not load driver");
+            System.exit(-1);
+        }
+
+        int retries = 10;
+        boolean shouldWait = false;
+        for (int i = 0; i < retries; ++i) {
+            System.out.println("Connecting to database...");
+            try {
+                if (shouldWait) {
+
+                    Thread.sleep(delay);
+                }
+                // Connect to database
+                con = DriverManager.getConnection("jdbc:mysql://" + location
+                        + "/world?allowPublicKeyRetrieval=true&useSSL=false", "root", "Gr0up23@DATAbase");
+                System.out.println("Successfully connected");
+                // Exit for loop
+                break;
+            } catch (SQLException sqle) {
+                System.out.println("Failed to connect to database attempt " + Integer.toString(i));
+                System.out.println(sqle.getMessage());
+
+                // Let's wait before attempting to reconnect
+                shouldWait = true;
+            } catch (InterruptedException ie) {
+                System.out.println("Thread interrupted? Should not happen.");
+            }
+        }
+    }
 
     /**
-     * Show a menu and print the chosen table(s) until the user exits.
+     * Disconnect from DB
      */
+    public void disconnect() {
+        if (con != null) {
+            try {
+                // Close connection
+                System.out.println("Closing World Database connection...");
+                con.close();
+                System.out.println("Connection closed.");
+
+            } catch (Exception e) {
+                System.out.println("Error closing connection to database");
+            }
+        }
+    }
+
+    //Method to display countries sorted by population
+    public ArrayList<Country> getCountriesByPopulation() {
+        ArrayList<Country> countryList = new ArrayList<>();
+        try {
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+            // Create string for SQL statement
+            String strSelect =
+                    "SELECT  country.continent, country.capital, city.ID, city.name AS capital_city, country.code, country.name, country.region, country.population "
+                            + "FROM country "
+                            + "JOIN city ON country.capital = city.ID "
+                            + "ORDER BY population DESC";
+
+            // Execute SQL statement
+            ResultSet rset = stmt.executeQuery(strSelect);
+            // Process the result set and add to the list
+            while (rset.next()) {
+                Country country = new Country();
+                country.code = rset.getString("country.code");
+                country.name = rset.getString("country.name");
+                country.continent = rset.getString("country.continent");
+                country.region = rset.getString("country.region");
+                country.population = rset.getInt("country.population");
+                country.capital = rset.getString("capital_city");
+                countryList.add(country);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get country details");
+            return null;
+        }
+
+
     public void menu()
     {
         if (con == null)
@@ -741,69 +820,4 @@ public class App
     private static Double getNullableDouble(ResultSet rset, String column) throws SQLException
     {
         double value = rset.getDouble(column);
-        return rset.wasNull() ? null : value;
-    }
-
-    /**
-     * Connect to the MySQL database.
-     *
-     * @param location host:port of the database
-     * @param delay    milliseconds to wait before each connection attempt
-     */
-    public void connect(String location, int delay)
-    {
-        try
-        {
-            // Load database driver
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        }
-        catch (ClassNotFoundException e)
-        {
-            System.out.println("Could not load SQL driver");
-            System.exit(-1);
-        }
-
-        int retries = 10;
-        for (int i = 0; i < retries; ++i)
-        {
-            System.out.println("Connecting to database...");
-            try
-            {
-                // Wait a bit for db to start
-                Thread.sleep(delay);
-                // Connect to database
-                con = DriverManager.getConnection("jdbc:mysql://" + location + "/world?useSSL=false&allowPublicKeyRetrieval=true", "root", "Gr0up23@DATAbase");
-                System.out.println("Successfully connected");
-                break;
-            }
-            catch (SQLException sqle)
-            {
-                System.out.println("Failed to connect to database attempt " + i);
-                System.out.println(sqle.getMessage());
-            }
-            catch (InterruptedException ie)
-            {
-                System.out.println("Thread interrupted? Should not happen.");
-            }
-        }
-    }
-
-    /**
-     * Disconnect from the MySQL database.
-     */
-    public void disconnect()
-    {
-        if (con != null)
-        {
-            try
-            {
-                // Close connection
-                con.close();
-            }
-            catch (Exception e)
-            {
-                System.out.println("Error closing connection to database");
-            }
-        }
-    }
-}
+        return rset.wasNull() ? null : value;}
