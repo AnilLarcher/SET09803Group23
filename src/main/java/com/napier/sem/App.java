@@ -188,7 +188,7 @@ public class App
     }
 
     //Method to display countries sorted by population
-    public ArrayList<Country> getCountriesByPopulation() {
+    public ArrayList<Country> getCountriesBypopulation() {
         ArrayList<Country> countryList = new ArrayList<>();
         try {
             // Create an SQL statement
@@ -221,8 +221,62 @@ public class App
 
         System.out.print("\n");
 
-        System.out.println("Countries Sorted by Population:");
+        System.out.println("==============Countries Sorted by Population============");
 
+        System.out.print("\n");
+
+        // Print header
+        System.out.println(String.format("%-15s %-30s %-15s %-30s %-15s %-15s", "Code", "Name", "Continent", "Region", "Population", "Capital"));
+        // Print each country's details
+        for (Country country : countryList) {
+            String country_string =
+                    String.format("%-15s %-30s %-15s %-30s %-15s %-15s",
+                            country.code, country.name, country.continent, country.region, country.population, country.capital);
+            System.out.println(country_string);
+        }
+        return countryList;
+    }
+    //Method to display the top N populated countries in the world
+    public ArrayList<Country> getTopNCountriesInWorldByPopulation(Integer number) {
+        ArrayList<Country> countryList = new ArrayList<>();
+        try {
+            //Input Validation
+            if (number == null || number <= 0) throw new Exception ("Fail! Invalid Number input for Query");
+
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+            // Create string for SQL statement
+            String strSelect =
+                    "SELECT  country.continent, country.capital, city.ID, city.name AS capital_city, country.code, country.name, country.region, country.population "
+                            + "FROM country "
+                            + "JOIN city ON country.capital = city.ID "
+                            + "ORDER BY population DESC"
+                            + " LIMIT " + number + " ";
+
+            // Execute SQL statement
+            ResultSet rset = stmt.executeQuery(strSelect);
+            // Process the result set and add to the list
+            while (rset.next()) {
+                Country country = new Country();
+                country.code = rset.getString("country.code");
+                country.name = rset.getString("country.name");
+                country.continent = rset.getString("country.continent");
+                country.region = rset.getString("country.region");
+                country.population = rset.getInt("country.population");
+                country.capital = rset.getString("capital_city");
+                countryList.add(country);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get country details");
+            return null;
+        }
+
+        // Print a blank line before the heading
+        System.out.print("\n");
+        // Print heading
+        System.out.println("Top N Countries In The World Sorted By Population:");
+        // Print a blank line after the heading
         System.out.print("\n");
 
         // Print header
