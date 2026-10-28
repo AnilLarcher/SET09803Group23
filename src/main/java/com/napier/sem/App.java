@@ -4,12 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 
 public class App
 {
@@ -17,6 +14,7 @@ public class App
      * Connection to MySQL database.
      */
     private Connection con = null;
+    private String countrySelection;
 
     public static void main(String[] args) {
         App app = new App();
@@ -36,40 +34,40 @@ public class App
         app.getTopNCountriesInWorldByPopulation(5);
 
         //Method to get top N populated countries in a continent
-        app.getTopNCountriesInContinentByPop(5, "Asia");
+        app.getTopNCountriesInContinentByPopulation(5, "Asia");
 
         //Method to get top N populated countries in a region
         app.getTopNCountriesInRegionByPopulation(10, "Caribbean");
 
         //Method to display countries by population in continent
-        app.getCountriesInContByPop("North America");
+        app.getCountriesInContByPopulation("North America");
 
         //Method to display countries by population in region
-        app.getCountriesInRegionByPop("Caribbean");
+        app.getCountriesInRegionByPopulation("Caribbean");
 
         //Method to display cities in the world by population
-        app.getCitiesByPop();
+        app.getCitiesByPopulation();
 
         //Method to display cities in the world by population in a continent
-        app.getCitiesByPopinAContinent("Europe");
+        app.getCitiesByPopulationinAContinent("Europe");
 
         //Method to display cities in the world by population in a region
-        app.getCitiesbyPopinARegion("Caribbean");
+        app.getCitiesbyPopulationinARegion("Caribbean");
 
         //Method to display cities in the world by population in a country
-        app.getCitiesbyPopinACountry("Antigua");
+        app.getCitiesbyPopulationinACountry("Antigua");
 
         //Method to display cities in the world by population in a district
-        app.getCitiesbyPopinaDistrict("George Town");
+        app.getCitiesbyPopulationinaDistrict("Cayo");
 
         //Method to display top N cities in the world by population
-        app.getTopNCitiesbyPopinTheWorld(6);
+        app.getTopNCitiesbyPopulationinTheWorld(13);
 
         //Method to display top N cities in a continent by population
-        app.getTopNCitiesbyPopinContinent(6, "Asia");
+        app.getTopNCitiesbyPopulationinContinent(10, "Asia");
 
         //Method to display top N cities in a region by population
-        app.getTopNCitiesbyPopinRegion(4, "Caribbean");
+        app.getTopNCitiesbyPopulationinRegion(7, "Latin America");
 
         //Method to display top N cities in a country by population
         app.getTopNCitiesbyPopinCountry(5, "Haiti");
@@ -87,7 +85,7 @@ public class App
         app.getCapitalCitiesinRegion("Caribbean");
 
         //Method to display top N capital cities by population
-        app.getTopNCapitalCities(5);
+        app.getTopNCapitalCities(12);
 
         //Method to display top N capital cities in a continent by population
         app.getTopNCapitalCitiesinaContinent(5, "North America");
@@ -95,13 +93,13 @@ public class App
         //Method to display top N capital cities in a region by population
         app.getTopNCapitalCitiesinaRegion(3, "Caribbean");
 
-        //Method to display the population of people , living in cities , and not living in cities in each continent
+        //Method to display the population of people in continents
         app.getPopulationofPeopleinContinent();
 
-        //Method to display the population of people , living in cities , and not living in cities in each region
+        //Method to display the population of people in region
         app.getPopulationofPeopleinRegion();
 
-        //Method to display the population of people , living in cities , and not living in cities in each country
+        //Method to display the population of people Countries
         app.getPopulationofPeopleinCountry();
 
         //Method to display total world population
@@ -221,7 +219,7 @@ public class App
 
         System.out.print("\n");
 
-        System.out.println("==============Countries Sorted by Population============");
+        System.out.println("============== Countries Sorted by Population ============");
 
         System.out.print("\n");
 
@@ -352,105 +350,41 @@ public class App
         return countryList;
     }
 
+    public long getTotalPopulationofCountry(String Country){
+    long TotalPopulation = 0;
+    try {
+        String selection = countrySelection == null ? "" : countrySelection.trim();
+        if (selection.isEmpty()) {
+            System.out.println("Country selection cannot be empty");
 
-    public void menu()
-    {
-        if (con == null)
-        {
-            System.out.println("Not connected to database, cannot show menu");
-            return;
         }
 
-        Scanner in = new Scanner(System.in);
-        while (true)
-        {
-            System.out.println();
-            System.out.println("===== World Database =====");
-            for (int i = 0; i < TABLES.length; ++i)
-            {
-                System.out.println((i + 1) + ". Show all " + TABLES[i] + " data");
-            }
-            System.out.println((TABLES.length + 1) + ". Show all tables");
-            System.out.println((TABLES.length + 2) + ". Show world population");
-            System.out.println((TABLES.length + 3) + ". Show selected country population");
-            System.out.println((TABLES.length + 4) + ". Show selected continent population");
-            System.out.println((TABLES.length + 5) + ". Show selected region population");
-            System.out.println((TABLES.length + 6) + ". Show all countries by population");
-            System.out.println((TABLES.length + 7) + ". Show countries in a continent by population");
-            System.out.println("0. Exit");
-            System.out.print("Choose an option: ");
-
-            // No input available (e.g. Docker without a terminal attached)
-            if (!in.hasNextLine())
-            {
-                System.out.println();
-                return;
-            }
-
-            String choice = in.nextLine().trim();
-            int option;
-            try
-            {
-                option = Integer.parseInt(choice);
-            }
-            catch (NumberFormatException e)
-            {
-                System.out.println("Invalid option: " + choice);
-                continue;
-            }
-
-            if (option == 0)
-            {
-                return;
-            }
-            else if (option >= 1 && option <= TABLES.length)
-            {
-                printTable(TABLES[option - 1]);
-            }
-            else if (option == TABLES.length + 1)
-            {
-                for (String table : TABLES)
-                {
-                    printTable(table);
+        String sql = "SELECT Name, Population FROM country WHERE Code = UPPER(?) OR Name = ? LIMIT 1";
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, selection);
+            stmt.setString(2, selection);
+            try (ResultSet rset = stmt.executeQuery()) {
+                if (rset.next()) {
+                    System.out.println("Country Population - " + rset.getString("Name") + ": "
+                            + rset.getLong("Population"));
+                } else {
+                    System.out.println("No country found for selection: " + selection);
                 }
             }
-            else if (option == TABLES.length + 2)
-            {
-                printWorldPopulation();
-            }
-            else if (option == TABLES.length + 3)
-            {
-                promptAndPrintCountryPopulation(in);
-            }
-            else if (option == TABLES.length + 4)
-            {
-                promptAndPrintContinentPopulation(in);
-            }
-            else if (option == TABLES.length + 5)
-            {
-                promptAndPrintRegionPopulation(in);
-            }
-            else if (option == TABLES.length + 6)
-            {
-                printAllCountriesByPopulation();
-            }
-            else if (option == TABLES.length + 7)
-            {
-                promptAndPrintCountriesByContinent(in);
-            }
-            else
-            {
-                System.out.println("Invalid option: " + choice);
-            }
+        } catch (SQLException e) {
+            System.out.println("Failed to get selected country population");
+            System.out.println(e.getMessage());
         }
+        return TotalPopulation;
     }
+
 
     /**
      * Print every row of a table with aligned columns.
      *
      * @param table name of the table to print (must be one of TABLES)
      */
-    public void printTable(String table)
+    /**public void printTable(String table)
     {
         try (Statement stmt = con.createStatement();
              ResultSet rset = stmt.executeQuery("SELECT * FROM " + table))
@@ -504,7 +438,7 @@ public class App
     /**
      * Print the total world population from the country table.
      */
-    public void printWorldPopulation()
+    /**public void printWorldPopulation()
     {
         try (Statement stmt = con.createStatement();
              ResultSet rset = stmt.executeQuery("SELECT SUM(Population) AS WorldPopulation FROM country"))
@@ -538,7 +472,7 @@ public class App
      *
      * @param in menu scanner
      */
-    private void promptAndPrintCountryPopulation(Scanner in)
+    /**private void promptAndPrintCountryPopulation(Scanner in)
     {
         System.out.print("Enter country code or name: ");
         if (!in.hasNextLine())
@@ -555,7 +489,7 @@ public class App
      *
      * @param countrySelection country code or country name
      */
-    public void printCountryPopulation(String countrySelection)
+    /**public void printCountryPopulation(String countrySelection)
     {
         String selection = countrySelection == null ? "" : countrySelection.trim();
         if (selection.isEmpty())
@@ -594,7 +528,7 @@ public class App
      *
      * @param in menu scanner
      */
-    private void promptAndPrintContinentPopulation(Scanner in)
+    /**private void promptAndPrintContinentPopulation(Scanner in)
     {
         System.out.print("Enter continent: ");
         if (!in.hasNextLine())
@@ -611,7 +545,7 @@ public class App
      *
      * @param continentSelection continent name
      */
-    public void printContinentPopulation(String continentSelection)
+    /**public void printContinentPopulation(String continentSelection)
     {
         String selection = continentSelection == null ? "" : continentSelection.trim();
         if (selection.isEmpty())
@@ -650,7 +584,7 @@ public class App
      *
      * @param in menu scanner
      */
-    private void promptAndPrintRegionPopulation(Scanner in)
+    /**private void promptAndPrintRegionPopulation(Scanner in)
     {
         System.out.print("Enter region: ");
         if (!in.hasNextLine())
@@ -667,7 +601,7 @@ public class App
      *
      * @param regionSelection region name
      */
-    public void printRegionPopulation(String regionSelection)
+   /** public void printRegionPopulation(String regionSelection)
     {
         String selection = regionSelection == null ? "" : regionSelection.trim();
         if (selection.isEmpty())
@@ -704,7 +638,7 @@ public class App
     /**
      * Print all countries ordered by population from largest to smallest.
      */
-    public void printAllCountriesByPopulation()
+    /**public void printAllCountriesByPopulation()
     {
         String sql = "SELECT country.Code AS Code, country.Name AS Name, country.Continent AS Continent, "
                 + "country.Region AS Region, country.Population AS Population, city.Name AS Capital "
@@ -727,7 +661,7 @@ public class App
      *
      * @param in menu scanner
      */
-    private void promptAndPrintCountriesByContinent(Scanner in)
+    /**private void promptAndPrintCountriesByContinent(Scanner in)
     {
         System.out.print("Enter continent: ");
         if (!in.hasNextLine())
@@ -744,7 +678,7 @@ public class App
      *
      * @param continentSelection continent name
      */
-    public void printCountriesByContinentPopulation(String continentSelection)
+    /**public void printCountriesByContinentPopulation(String continentSelection)
     {
         String selection = continentSelection == null ? "" : continentSelection.trim();
         if (selection.isEmpty())
@@ -791,7 +725,7 @@ public class App
      * @param title report title
      * @param rset result set to print
      */
-    private void printReportRows(String title, ResultSet rset) throws SQLException
+    /**private void printReportRows(String title, ResultSet rset) throws SQLException
     {
         ResultSetMetaData meta = rset.getMetaData();
         int cols = meta.getColumnCount();
@@ -837,11 +771,11 @@ public class App
      *
      * @return list of cities, or null if the query fails
      */
-    public List<City> getAllCities()
+    /**public List<City> getAllCities()
     {
         try (Statement stmt = con.createStatement();
              ResultSet rset = stmt.executeQuery("SELECT ID, Name, CountryCode, District, Population FROM world.city")) /** Still works, intelliJ cannot see into the database  **/
-        {
+       /** {
             List<City> cities = new ArrayList<>();
             while (rset.next())
             {
@@ -867,13 +801,13 @@ public class App
      *
      * @return list of countries, or null if the query fails
      */
-    public List<Country> getAllCountries()
+    /**public List<Country> getAllCountries()
     {
         try (Statement stmt = con.createStatement();
              ResultSet rset = stmt.executeQuery(
                      "SELECT Code, Name, Continent, Region, SurfaceArea, IndepYear, Population, LifeExpectancy, "
                              + "GNP, GNPOld, LocalName, GovernmentForm, HeadOfState, Capital, Code2 FROM country")) /** Still works, intelliJ cannot see into the database  **/
-        {
+        /**{
             List<Country> countries = new ArrayList<>();
             while (rset.next())
             {
@@ -910,11 +844,11 @@ public class App
      *
      * @return list of country languages, or null if the query fails
      */
-    public List<CountryLanguage> getAllCountryLanguages()
+    /**public List<CountryLanguage> getAllCountryLanguages()
     {
         try (Statement stmt = con.createStatement();
              ResultSet rset = stmt.executeQuery("SELECT CountryCode, Language, IsOfficial, Percentage FROM countrylanguage")) /** Still works, intelliJ cannot see into the database  **/
-        {
+        /**{
             List<CountryLanguage> languages = new ArrayList<>();
             while (rset.next())
             {
@@ -939,7 +873,7 @@ public class App
      *
      * @return the value, or null if the column is NULL
      */
-    private static Integer getNullableInt(ResultSet rset, String column) throws SQLException
+    /**private static Integer getNullableInt(ResultSet rset, String column) throws SQLException
     {
         int value = rset.getInt(column);
         return rset.wasNull() ? null : value;
@@ -950,7 +884,7 @@ public class App
      *
      * @return the value, or null if the column is NULL
      */
-    private static Double getNullableDouble(ResultSet rset, String column) throws SQLException
+    /**private static Double getNullableDouble(ResultSet rset, String column) throws SQLException
     {
         double value = rset.getDouble(column);
-        return rset.wasNull() ? null : value;}
+        return rset.wasNull() ? null : value;} */
