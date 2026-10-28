@@ -37,91 +37,91 @@ public class App
         app.getTopNCountriesInContinentByPopulation(5, "Asia");
 
         //Method to get top N populated countries in a region
-        app.getTopNCountriesInRegionByPopulation(10, "Caribbean");
+        //app.getTopNCountriesInRegionByPopulation(10, "Caribbean");
 
         //Method to display countries by population in continent
-        app.getCountriesInContByPopulation("North America");
+        //app.getCountriesInContByPopulation("North America");
 
         //Method to display countries by population in region
-        app.getCountriesInRegionByPopulation("Caribbean");
+        //app.getCountriesInRegionByPopulation("Caribbean");
 
         //Method to display cities in the world by population
-        app.getCitiesByPopulation();
+        //app.getCitiesByPopulation();
 
         //Method to display cities in the world by population in a continent
-        app.getCitiesByPopulationinAContinent("Europe");
+        //app.getCitiesByPopulationinAContinent("Europe");
 
         //Method to display cities in the world by population in a region
-        app.getCitiesbyPopulationinARegion("Caribbean");
+        //app.getCitiesbyPopulationinARegion("Caribbean");
 
         //Method to display cities in the world by population in a country
-        app.getCitiesbyPopulationinACountry("Antigua");
+        //app.getCitiesbyPopulationinACountry("Antigua");
 
         //Method to display cities in the world by population in a district
-        app.getCitiesbyPopulationinaDistrict("Cayo");
+        //app.getCitiesbyPopulationinaDistrict("Cayo");
 
         //Method to display top N cities in the world by population
-        app.getTopNCitiesbyPopulationinTheWorld(13);
+        //app.getTopNCitiesbyPopulationinTheWorld(13);
 
         //Method to display top N cities in a continent by population
-        app.getTopNCitiesbyPopulationinContinent(10, "Asia");
+        //app.getTopNCitiesbyPopulationinContinent(10, "Asia");
 
         //Method to display top N cities in a region by population
-        app.getTopNCitiesbyPopulationinRegion(7, "Latin America");
+        //app.getTopNCitiesbyPopulationinRegion(7, "Latin America");
 
         //Method to display top N cities in a country by population
-        app.getTopNCitiesbyPopinCountry(5, "Haiti");
+        //app.getTopNCitiesbyPopinCountry(5, "Haiti");
 
         //Method to display top N cities in a district by population
-        app.getTopNCitiesbyPopinDistrict(3, "Castries");
+        //app.getTopNCitiesbyPopinDistrict(3, "Castries");
 
         //Method to display capital cities in the world by population
-        app.getCapitalCities();
+        //app.getCapitalCities();
 
         //Method to display capital cities in a continent by population
-        app.getCapitalCitiesinContinent("Europe");
+        //app.getCapitalCitiesinContinent("Europe");
 
         //Method to display capital cities in a region by population
-        app.getCapitalCitiesinRegion("Caribbean");
+        //app.getCapitalCitiesinRegion("Caribbean");
 
         //Method to display top N capital cities by population
-        app.getTopNCapitalCities(12);
+        //app.getTopNCapitalCities(12);
 
         //Method to display top N capital cities in a continent by population
-        app.getTopNCapitalCitiesinaContinent(5, "North America");
+        //app.getTopNCapitalCitiesinaContinent(5, "North America");
 
         //Method to display top N capital cities in a region by population
-        app.getTopNCapitalCitiesinaRegion(3, "Caribbean");
+        //app.getTopNCapitalCitiesinaRegion(3, "Caribbean");
 
         //Method to display the population of people in continents
-        app.getPopulationofPeopleinContinent();
+        //app.getPopulationofPeopleinContinent();
 
         //Method to display the population of people in region
-        app.getPopulationofPeopleinRegion();
+        //app.getPopulationofPeopleinRegion();
 
         //Method to display the population of people Countries
-        app.getPopulationofPeopleinCountry();
+        //app.getPopulationofPeopleinCountry();
 
         //Method to display total world population
-        app.getTotalPopulation();
+        //app.getTotalPopulation();
 
         //Method to display total population of a continent
-        app.getTotalPopulationofContinent("Asia");
+        //app.getTotalPopulationofContinent("Asia");
 
         //Method to display total population of a region
-        app.getTotalPopulationofRegion("Caribbean");
+        //app.getTotalPopulationofRegion("Caribbean");
 
         //Method to display total population of a country
         app.getTotalPopulationofCountry("Barbados");
 
         //Method to display total population of a district
-        app.getTotalPopulationofDistrict("Castries");
+        //app.getTotalPopulationofDistrict("Castries");
 
         //Method to display total population of a city
-        app.getTotalPopulationofCity("Georgetown");
+        //app.getTotalPopulationofCity("Georgetown");
 
         //Method to display language speakers in the world
-        app.getLanguageSpeakers();
+        //app.getLanguageSpeakers();
 
         // Disconnect from database
         app.disconnect();
@@ -350,34 +350,33 @@ public class App
         return countryList;
     }
 
-    public long getTotalPopulationofCountry(String Country){
-    long TotalPopulation = 0;
-    try {
-        String selection = countrySelection == null ? "" : countrySelection.trim();
-        if (selection.isEmpty()) {
-            System.out.println("Country selection cannot be empty");
+    public long getTotalPopulationofCountry(String Country) {
+        long TotalPopulation = 0;
+        try {
+            String selection = countrySelection == null ? "" : countrySelection.trim();
+            if (selection.isEmpty()) {
+                System.out.println("Country selection cannot be empty");
 
-        }
-
-        String sql = "SELECT Name, Population FROM country WHERE Code = UPPER(?) OR Name = ? LIMIT 1";
-        try (PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setString(1, selection);
-            stmt.setString(2, selection);
-            try (ResultSet rset = stmt.executeQuery()) {
-                if (rset.next()) {
-                    System.out.println("Country Population - " + rset.getString("Name") + ": "
-                            + rset.getLong("Population"));
-                } else {
-                    System.out.println("No country found for selection: " + selection);
-                }
             }
-        } catch (SQLException e) {
-            System.out.println("Failed to get selected country population");
-            System.out.println(e.getMessage());
-        }
-        return TotalPopulation;
-    }
 
+            String sql = "SELECT Name, Population FROM country WHERE Code = UPPER(?) OR Name = ? LIMIT 1";
+            try (PreparedStatement stmt = con.prepareStatement(sql)) {
+                stmt.setString(1, selection);
+                stmt.setString(2, selection);
+                try (ResultSet rset = stmt.executeQuery()) {
+                    if (rset.next()) {
+                        System.out.println("Country Population - " + rset.getString("Name") + ": "
+                                + rset.getLong("Population"));
+                    } else {
+                        System.out.println("No country found for selection: " + selection);
+                    }
+                }
+            } catch (SQLException e) {
+                System.out.println("Failed to get selected country population");
+                System.out.println(e.getMessage());
+            }
+            return TotalPopulation;
+        }
 
     /**
      * Print every row of a table with aligned columns.
