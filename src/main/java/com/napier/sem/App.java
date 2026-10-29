@@ -134,7 +134,7 @@ public class App {
      */
     public void connect(String location, int delay) {
         try {
-            Class.forName("com.mql.cj.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
         } catch (ClassNotFoundException e) {
             System.out.println("Could not load driver");
             System.exit(-1);
