@@ -3,6 +3,7 @@
 * Develop Branch Status ![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/AnilLarcher/SET09803Group23/main.yml?branch=develop)
 * License [![LICENSE](https://img.shields.io/github/license/AnilLarcher/SET09803Group23.svg?style=flat-square)](https://github.com/Calixte-Williams/set08803_gw/blob/master/LICENSE)
 * Release [![Releases](https://img.shields.io/github/release/AnilLarcher/SET09803Group23/all.svg?style=flat-square)](https://github.com/Calixte-Williams/set08803_gw/releases)
+* Code Coverage [![codecov](https://codecov.io/gh/AnilLarcher/SET09803Group23/branch/main/graph/badge.svg?token=VYZ5G3UOCX)](https://codecov.io/gh/AnilLarcher/SET09803Group23)
 
 ## Group Members 
 - Antoine Arthurs
