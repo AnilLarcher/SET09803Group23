@@ -97,10 +97,10 @@ public class App {
         //app.getPopulationofPeopleinContinent();
 
         //Method to display the population of people in region
-        //app.getPopulationofPeopleinRegion();
+        app.getPopulationofPeopleinRegion();
 
         //Method to display the population of people Countries
-        //app.getPopulationofPeopleinCountry();
+        app.getPopulationofPeopleinCountry();
 
         //Method to display total world population
         //app.getTotalPopulation();
@@ -112,10 +112,10 @@ public class App {
         //app.getTotalPopulationofRegion("Caribbean");
 
         //Method to display total population of a country
-        app.getTotalPopulationofCountry("Barbados");
+        //app.getTotalPopulationofCountry("Barbados");
 
         //Method to display total population of a district
-        //app.getTotalPopulationofDistrict("Castries");
+        app.getTotalPopulationofDistrict("Castries");
 
         //Method to display total population of a city
         //app.getTotalPopulationofCity("Georgetown");
@@ -490,6 +490,96 @@ public class App {
             System.out.println(country_string);
         }
         return countryList;
+    }
+
+    /**
+     * Issue #54: Report population, city population, and non-city population by region
+     */
+    public void getPopulationofPeopleinRegion() {
+        try {
+            Statement stmt = con.createStatement();
+            String strSelect =
+                    "SELECT country.Region, " +
+                            "SUM(country.Population) AS TotalPopulation, " +
+                            "SUM(city.Population) AS CityPopulation, " +
+                            "(SUM(country.Population) - SUM(city.Population)) AS NonCityPopulation " +
+                            "FROM country " +
+                            "LEFT JOIN city ON country.Code = city.CountryCode " +
+                            "GROUP BY country.Region";
+            ResultSet rset = stmt.executeQuery(strSelect);
+
+            System.out.println("\n================ Population Breakdown by Region ================\n");
+            System.out.println(String.format("%-30s %-15s %-15s %-15s", "Region", "Total Pop", "City Pop", "Non-City Pop"));
+            while (rset.next()) {
+                String region = rset.getString("Region");
+                long totalPop = rset.getLong("TotalPopulation");
+                long cityPop = rset.getLong("CityPopulation");
+                long nonCityPop = rset.getLong("NonCityPopulation");
+                System.out.println(String.format("%-30s %-15d %-15d %-15d", region, totalPop, cityPop, nonCityPop));
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get population report by region");
+        }
+    }
+
+    /**
+     * Issue #55: Report population, city population, and non-city population by country
+     */
+    public void getPopulationofPeopleinCountry() {
+        try {
+            Statement stmt = con.createStatement();
+            String strSelect =
+                    "SELECT country.Name, " +
+                            "country.Population AS TotalPopulation, " +
+                            "SUM(city.Population) AS CityPopulation, " +
+                            "(country.Population - SUM(city.Population)) AS NonCityPopulation " +
+                            "FROM country " +
+                            "LEFT JOIN city ON country.Code = city.CountryCode " +
+                            "GROUP BY country.Code, country.Name, country.Population";
+            ResultSet rset = stmt.executeQuery(strSelect);
+
+            System.out.println("\n================ Population Breakdown by Country ================\n");
+            System.out.println(String.format("%-30s %-15s %-15s %-15s", "Country", "Total Pop", "City Pop", "Non-City Pop"));
+            while (rset.next()) {
+                String name = rset.getString("Name");
+                long totalPop = rset.getLong("TotalPopulation");
+                long cityPop = rset.getLong("CityPopulation");
+                long nonCityPop = rset.getLong("NonCityPopulation");
+                System.out.println(String.format("%-30s %-15d %-15d %-15d", name, totalPop, cityPop, nonCityPop));
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get population report by country");
+        }
+    }
+
+    /**
+     * Issue #60: Report the total population of a selected district
+     */
+    public void getTotalPopulationofDistrict(String districtName) {
+        try {
+            String strSelect =
+                    "SELECT District, SUM(Population) AS TotalPopulation " +
+                            "FROM city " +
+                            "WHERE District = ? " +
+                            "GROUP BY District";
+            PreparedStatement stmt = con.prepareStatement(strSelect);
+            stmt.setString(1, districtName);
+            ResultSet rset = stmt.executeQuery();
+
+            System.out.println("\n================ Population of Selected District ================\n");
+            if (rset.next()) {
+                String district = rset.getString("District");
+                long totalPop = rset.getLong("TotalPopulation");
+                System.out.println(String.format("%-20s %-15d", district, totalPop));
+            } else {
+                System.out.println("No district found: " + districtName);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get population report for district: " + districtName);
+        }
     }
 
 }
