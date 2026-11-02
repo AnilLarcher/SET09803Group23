@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class App
 {
@@ -32,109 +31,38 @@ public class App
             app.connect(args[0], Integer.parseInt(args[1]));
         }
 
-        app.menu();
-
-        app.disconnect();
+        try
+        {
+            app.runReports();
+        }
+        finally
+        {
+            app.disconnect();
+        }
     }
 
-    /**
-     * Tables in the world database that the menu can display.
-     */
     private static final String[] TABLES = {"city", "country", "countrylanguage"};
 
-    /**
-     * Show a menu and print the chosen table(s) until the user exits.
-     */
-    public void menu()
+    public void runReports()
     {
         if (con == null)
         {
-            System.out.println("Not connected to database, cannot show menu");
+            System.out.println("Not connected to database, cannot run reports");
             return;
         }
 
-        Scanner in = new Scanner(System.in);
-        while (true)
+        for (String table : TABLES)
         {
-            System.out.println();
-            System.out.println("===== World Database =====");
-            for (int i = 0; i < TABLES.length; ++i)
-            {
-                System.out.println((i + 1) + ". Show all " + TABLES[i] + " data");
-            }
-            System.out.println((TABLES.length + 1) + ". Show all tables");
-            System.out.println((TABLES.length + 2) + ". Show world population");
-            System.out.println((TABLES.length + 3) + ". Show selected country population");
-            System.out.println((TABLES.length + 4) + ". Show selected continent population");
-            System.out.println((TABLES.length + 5) + ". Show selected region population");
-            System.out.println((TABLES.length + 6) + ". Show all countries by population");
-            System.out.println((TABLES.length + 7) + ". Show countries in a continent by population");
-            System.out.println("0. Exit");
-            System.out.print("Choose an option: ");
-
-            // No input available (e.g. Docker without a terminal attached)
-            if (!in.hasNextLine())
-            {
-                System.out.println();
-                return;
-            }
-
-            String choice = in.nextLine().trim();
-            int option;
-            try
-            {
-                option = Integer.parseInt(choice);
-            }
-            catch (NumberFormatException e)
-            {
-                System.out.println("Invalid option: " + choice);
-                continue;
-            }
-
-            if (option == 0)
-            {
-                return;
-            }
-            else if (option >= 1 && option <= TABLES.length)
-            {
-                printTable(TABLES[option - 1]);
-            }
-            else if (option == TABLES.length + 1)
-            {
-                for (String table : TABLES)
-                {
-                    printTable(table);
-                }
-            }
-            else if (option == TABLES.length + 2)
-            {
-                printWorldPopulation();
-            }
-            else if (option == TABLES.length + 3)
-            {
-                promptAndPrintCountryPopulation(in);
-            }
-            else if (option == TABLES.length + 4)
-            {
-                promptAndPrintContinentPopulation(in);
-            }
-            else if (option == TABLES.length + 5)
-            {
-                promptAndPrintRegionPopulation(in);
-            }
-            else if (option == TABLES.length + 6)
-            {
-                printAllCountriesByPopulation();
-            }
-            else if (option == TABLES.length + 7)
-            {
-                promptAndPrintCountriesByContinent(in);
-            }
-            else
-            {
-                System.out.println("Invalid option: " + choice);
-            }
+            printTable(table);
         }
+
+        System.out.println("\n=== Population totals ===");
+        printWorldPopulation();
+        printCountryPopulation("GBR");
+        printContinentPopulation("Asia");
+        printRegionPopulation("Caribbean");
+        printAllCountriesByPopulation();
+        printCountriesByContinentPopulation("Asia");
     }
 
     /**
@@ -226,23 +154,6 @@ public class App
     }
 
     /**
-     * Ask for a country and print its population.
-     *
-     * @param in menu scanner
-     */
-    private void promptAndPrintCountryPopulation(Scanner in)
-    {
-        System.out.print("Enter country code or name: ");
-        if (!in.hasNextLine())
-        {
-            System.out.println();
-            return;
-        }
-
-        printCountryPopulation(in.nextLine());
-    }
-
-    /**
      * Print the population for one selected country.
      *
      * @param countrySelection country code or country name
@@ -282,23 +193,6 @@ public class App
     }
 
     /**
-     * Ask for a continent and print its population.
-     *
-     * @param in menu scanner
-     */
-    private void promptAndPrintContinentPopulation(Scanner in)
-    {
-        System.out.print("Enter continent: ");
-        if (!in.hasNextLine())
-        {
-            System.out.println();
-            return;
-        }
-
-        printContinentPopulation(in.nextLine());
-    }
-
-    /**
      * Print the population for one selected continent.
      *
      * @param continentSelection continent name
@@ -335,23 +229,6 @@ public class App
             System.out.println("Failed to get selected continent population");
             System.out.println(e.getMessage());
         }
-    }
-
-    /**
-     * Ask for a region and print its population.
-     *
-     * @param in menu scanner
-     */
-    private void promptAndPrintRegionPopulation(Scanner in)
-    {
-        System.out.print("Enter region: ");
-        if (!in.hasNextLine())
-        {
-            System.out.println();
-            return;
-        }
-
-        printRegionPopulation(in.nextLine());
     }
 
     /**
@@ -412,23 +289,6 @@ public class App
             System.out.println("Failed to get countries by population");
             System.out.println(e.getMessage());
         }
-    }
-
-    /**
-     * Ask for a continent and print matching countries ordered by population.
-     *
-     * @param in menu scanner
-     */
-    private void promptAndPrintCountriesByContinent(Scanner in)
-    {
-        System.out.print("Enter continent: ");
-        if (!in.hasNextLine())
-        {
-            System.out.println();
-            return;
-        }
-
-        printCountriesByContinentPopulation(in.nextLine());
     }
 
     /**

@@ -3,8 +3,8 @@
 ## Purpose
 Verify the World database connection and sample queries for issue #21, including access through the Java application.
 Test environment
-- Tester: Shevanise Givans - meee!!1
-- Test date: 11 October 2026, Jamdung time lol
+- Tester: Shevanise Givans
+- Test date: 11 October 2026
 - Tested commit: 00f61e4
 - Branch: feature/21-database-connection-test
 - Java: Microsoft OpenJDK 17.0.20.1
@@ -17,7 +17,7 @@ Test environment
 
 SQL checks
 1. SELECT 1;
-   Expected: 1. Actual: 1. Result: PASSS.
+   Expected: 1. Actual: 1. Result: PASS.
 2. SHOW TABLES;
    Expected: city, country and countrylanguage. Actual: all three tables were listed. Result: PASS.
 3. SELECT COUNT(*) AS country_count FROM country;
