@@ -9,22 +9,22 @@ public class Country
     /**
      * Three letter country code (primary key).
      */
-    private String code;
+    String code;
 
     /**
      * Country name.
      */
-    private String name;
+    String name;
 
     /**
      * Continent the country is in.
      */
-    private String continent;
+    String continent;
 
     /**
      * Region the country is in.
      */
-    private String region;
+    String region;
 
     /**
      * Surface area in square kilometres.
@@ -39,7 +39,7 @@ public class Country
     /**
      * Population of the country.
      */
-    private int population;
+    int population;
 
     /**
      * Life expectancy (may be null).
@@ -74,7 +74,7 @@ public class Country
     /**
      * ID of the capital city in the city table (may be null).
      */
-    private Integer capital;
+    String capital;
 
     /**
      * Two letter country code.
@@ -218,12 +218,12 @@ public class Country
         this.headOfState = headOfState;
     }
 
-    public Integer getCapital()
+    public String getCapital()
     {
         return capital;
     }
 
-    public void setCapital(Integer capital)
+    public void setCapital(String capital)
     {
         this.capital = capital;
     }

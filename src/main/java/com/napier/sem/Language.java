@@ -5,10 +5,10 @@ package com.napier.sem;
  */
 public class Language {
     private String countryCode;
-    private String language;
+    String language;
     private boolean isOfficial;
-    private double percentage;
-    private long totalSpeakers;
+    public double percentage;
+    public long totalSpeakers;
 
     public Language() {}
 
