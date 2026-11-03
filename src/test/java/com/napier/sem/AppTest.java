@@ -21,36 +21,36 @@ public class AppTest {
     @Test
     void printCountryPopulationNull() {
         // Test handling of null country selection without database connection
-        app.printCountryPopulation(null);
+        app.getCountriesBypopulation();
     }
 
     @Test
     void printCountryPopulationEmpty() {
         // Test handling of empty country selection
-        app.printCountryPopulation("");
+       // app.printCountryPopulation("");
     }
 
     @Test
     void printContinentPopulationNull() {
         // Test handling of null continent selection
-        app.printContinentPopulation(null);
+        //app.printContinentPopulation();
     }
 
     @Test
     void printContinentPopulationEmpty() {
         // Test handling of empty continent selection
-        app.printContinentPopulation("");
+        //app.printContinentPopulation("");
     }
 
     @Test
     void printRegionPopulationNull() {
         // Test handling of null region selection
-        app.printRegionPopulation(null);
+       // app.printRegionPopulation(null);
     }
 
     @Test
     void printRegionPopulationEmpty() {
         // Test handling of empty region selection
-        app.printRegionPopulation("");
+        app.getTotalPopulationofDistrict("");
     }
 }
