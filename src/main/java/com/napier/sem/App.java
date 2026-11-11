@@ -64,7 +64,7 @@ public class App {
         //app.getTopNCitiesbyPopulationinTheWorld(13);
 
         //Method to display top N cities in a continent by population
-        //app.getTopNCitiesbyPopulationinContinent(10, "Asia");
+        app.getTopNCitiesbyPopulationinContinent(10, "Asia");
 
         //Method to display top N cities in a region by population
         //app.getTopNCitiesbyPopulationinRegion(7, "Latin America");
@@ -380,6 +380,58 @@ public class App {
         } finally {
 
         }
+    }
+
+    //Method to display the top N populated cities in a continent
+    public ArrayList<City> getTopNCitiesbyPopulationinContinent(Integer number, String continent) {
+        ArrayList<City> cityList = new ArrayList<>();
+        try {
+            //Input Validation
+            if (number == null || number <= 0 || continent == null || continent.trim().isEmpty())
+                throw new Exception("Fail! Invalid input for Query");
+
+            String strSelect =
+                    "SELECT city.ID, city.Name, city.CountryCode, country.Name AS CountryName, city.District, city.Population "
+                            + "FROM city "
+                            + "JOIN country ON city.CountryCode = country.Code "
+                            + "WHERE country.Continent = ? "
+                            + "ORDER BY city.Population DESC "
+                            + "LIMIT ?";
+
+            try (PreparedStatement stmt = con.prepareStatement(strSelect)) {
+                stmt.setString(1, continent);
+                stmt.setInt(2, number);
+                try (ResultSet rset = stmt.executeQuery()) {
+                    while (rset.next()) {
+                        City city = new City();
+                        city.setId(rset.getInt("ID"));
+                        city.setName(rset.getString("Name"));
+                        city.setCountryCode(rset.getString("CountryCode"));
+                        city.setCountryName(rset.getString("CountryName"));
+                        city.setDistrict(rset.getString("District"));
+                        city.setPopulation(rset.getInt("Population"));
+                        cityList.add(city);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get city details");
+            return null;
+        }
+
+        System.out.print("\n");
+        System.out.println("============== Top N Cities In The Continent Sorted By Population ==============");
+        System.out.print("\n");
+
+        // Print header
+        System.out.println(String.format("%-35s %-35s %-25s %-15s", "Name", "Country", "District", "Population"));
+        // Print each city's details
+        for (City city : cityList) {
+            System.out.println(String.format("%-35s %-35s %-25s %-15s",
+                    city.getName(), city.getCountryName(), city.getDistrict(), city.getPopulation()));
+        }
+        return cityList;
     }
 
     //Method to display the total number of people who speak
