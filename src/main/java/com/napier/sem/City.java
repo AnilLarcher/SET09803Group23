@@ -31,6 +31,21 @@ public class City
     private int population;
 
     /**
+     * Name of the country the city is in (populated by report queries that join country).
+     */
+    private String countryName;
+
+    public String getCountryName()
+    {
+        return countryName;
+    }
+
+    public void setCountryName(String countryName)
+    {
+        this.countryName = countryName;
+    }
+
+    /**
      * Create an empty city.
      */
     public City()
