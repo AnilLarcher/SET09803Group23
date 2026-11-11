@@ -88,7 +88,7 @@ public class App {
         //app.getTopNCapitalCities(12);
 
         //Method to display top N capital cities in a continent by population
-        //app.getTopNCapitalCitiesinaContinent(5, "North America");
+        app.getTopNCapitalCitiesinaContinent(5, "North America");
 
         //Method to display top N capital cities in a region by population
         //app.getTopNCapitalCitiesinaRegion(3, "Caribbean");
@@ -490,6 +490,54 @@ public class App {
             System.out.println(country_string);
         }
         return countryList;
+    }
+
+    /**
+     * Issue #51: Report the top N capital cities in a selected continent by population
+     */
+    public ArrayList<City> getTopNCapitalCitiesinaContinent(int n, String continent) {
+        ArrayList<City> cityList = new ArrayList<>();
+        try {
+            if (n <= 0) {
+                throw new Exception("N must be a positive integer greater than 0");
+            }
+            if (continent == null || continent.trim().isEmpty()) {
+                throw new Exception("Continent input cannot be empty or null");
+            }
+
+            Statement stmt = con.createStatement();
+            String strSelect =
+                    "SELECT city.Name AS capital_city, country.Name AS country_name, city.Population AS population " +
+                            "FROM country " +
+                            "JOIN city ON country.Capital = city.ID " +
+                            "WHERE country.Continent = '" + continent + "' " +
+                            "ORDER BY city.Population DESC " +
+                            "LIMIT " + n;
+
+            ResultSet rset = stmt.executeQuery(strSelect);
+            while (rset.next()) {
+                City city = new City();
+                city.setName(rset.getString("capital_city"));
+                city.setPopulation(rset.getInt("population"));
+                cityList.add(city);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get top " + n + " capital cities in continent: " + continent);
+            return null;
+        }
+
+        System.out.print("\n");
+        System.out.println("================ Top " + n + " Capital Cities in Continent (" + continent + ") Sorted by Population ================");
+        System.out.print("\n");
+        System.out.println(String.format("%-30s %-15s", "Capital City", "Population"));
+
+        for (City city : cityList) {
+            String city_string = String.format("%-30s %-15d", city.getName(), city.getPopulation());
+            System.out.println(city_string);
+        }
+
+        return cityList;
     }
 
     /**
