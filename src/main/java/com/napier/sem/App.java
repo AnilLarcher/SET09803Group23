@@ -94,10 +94,10 @@ public class App {
         //app.getTopNCapitalCitiesinaRegion(3, "Caribbean");
 
         //Method to display the population of people in continents
-        //app.getPopulationofPeopleinContinent();
+        app.getPopulationofPeopleinContinent();
 
         //Method to display the population of people in region
-        app.getPopulationofPeopleinRegion();
+        //app.getPopulationofPeopleinRegion();
 
         //Method to display the population of people Countries
         app.getPopulationofPeopleinCountry();
@@ -490,6 +490,64 @@ public class App {
             System.out.println(country_string);
         }
         return countryList;
+    }
+
+    /**
+     * Issue #53: Report population, city population, and non-city population by continent
+     */
+    public ArrayList<PopulationReport> getPopulationofPeopleinContinent() {
+        ArrayList<PopulationReport> reportList = new ArrayList<>();
+        try {
+            Statement stmt = con.createStatement();
+            String strSelect =
+                    "SELECT country.Continent AS name, " +
+                            "SUM(country.Population) AS total_population, " +
+                            "SUM(IFNULL(city_pop.city_population, 0)) AS city_population, " +
+                            "SUM(country.Population) - SUM(IFNULL(city_pop.city_population, 0)) AS non_city_population " +
+                            "FROM country " +
+                            "LEFT JOIN ( " +
+                            "    SELECT CountryCode, SUM(Population) AS city_population " +
+                            "    FROM city " +
+                            "    GROUP BY CountryCode " +
+                            ") city_pop ON country.Code = city_pop.CountryCode " +
+                            "GROUP BY country.Continent " +
+                            "ORDER BY total_population DESC";
+
+            ResultSet rset = stmt.executeQuery(strSelect);
+            while (rset.next()) {
+                PopulationReport report = new PopulationReport();
+                report.setName(rset.getString("name"));
+                report.setTotalPopulation(rset.getLong("total_population"));
+                report.setCityPopulation(rset.getLong("city_population"));
+                report.setNonCityPopulation(rset.getLong("non_city_population"));
+                reportList.add(report);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get population breakdown by continent");
+            return null;
+        }
+
+        System.out.print("\n");
+        System.out.println("================ Population Breakdown by Continent ================");
+        System.out.print("\n");
+        System.out.println(String.format("%-25s %-20s %-20s %-12s %-20s %-12s",
+                "Continent", "Total Population", "City Population", "City %", "Non-City Population", "Non-City %"));
+
+        for (PopulationReport report : reportList) {
+            long total = report.getTotalPopulation();
+            long city = report.getCityPopulation();
+            long nonCity = report.getNonCityPopulation();
+
+            double cityPct = total > 0 ? ((double) city / total) * 100 : 0;
+            double nonCityPct = total > 0 ? ((double) nonCity / total) * 100 : 0;
+
+            String report_string = String.format("%-25s %-20d %-20d %-11.2f%% %-20d %-11.2f%%",
+                    report.getName(), total, city, cityPct, nonCity, nonCityPct);
+            System.out.println(report_string);
+        }
+
+        return reportList;
     }
 
     /**
