@@ -79,7 +79,7 @@ public class App {
         //app.getCapitalCities();
 
         //Method to display capital cities in a continent by population
-        //app.getCapitalCitiesinContinent("Europe");
+        app.getCapitalCitiesinContinent("Europe");
 
         //Method to display capital cities in a region by population
         //app.getCapitalCitiesinRegion("Caribbean");
@@ -490,6 +490,52 @@ public class App {
             System.out.println(country_string);
         }
         return countryList;
+    }
+
+    /**
+     * Issue #48: Report capital cities in a selected continent ordered by population
+     */
+    public ArrayList<City> getCapitalCitiesinContinent(String continent) {
+        ArrayList<City> cityList = new ArrayList<>();
+        try {
+            if (continent == null || continent.trim().isEmpty()) {
+                throw new Exception("Continent input cannot be empty or null");
+            }
+
+            Statement stmt = con.createStatement();
+            String strSelect =
+                    "SELECT city.Name AS capital_city, country.Name AS country_name, city.Population AS population " +
+                            "FROM country " +
+                            "JOIN city ON country.Capital = city.ID " +
+                            "WHERE country.Continent = '" + continent + "' " +
+                            "ORDER BY city.Population DESC";
+
+            ResultSet rset = stmt.executeQuery(strSelect);
+            while (rset.next()) {
+                City city = new City();
+                // Use setter methods because City fields are private
+                city.setName(rset.getString("capital_city"));
+                city.setPopulation(rset.getInt("population"));
+                cityList.add(city);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get capital cities in continent: " + continent);
+            return null;
+        }
+
+        System.out.print("\n");
+        System.out.println("================ Capital Cities in Continent (" + continent + ") Sorted by Population ================");
+        System.out.print("\n");
+        System.out.println(String.format("%-30s %-15s", "Capital City", "Population"));
+
+        for (City city : cityList) {
+            // Use getter methods to print the values
+            String city_string = String.format("%-30s %-15d", city.getName(), city.getPopulation());
+            System.out.println(city_string);
+        }
+
+        return cityList;
     }
 
     /**
