@@ -82,7 +82,7 @@ public class App {
         //app.getCapitalCitiesinContinent("Europe");
 
         //Method to display capital cities in a region by population
-        //app.getCapitalCitiesinRegion("Caribbean");
+        app.getCapitalCitiesinRegion("Caribbean");
 
         //Method to display top N capital cities by population
         //app.getTopNCapitalCities(12);
@@ -490,6 +490,50 @@ public class App {
             System.out.println(country_string);
         }
         return countryList;
+    }
+
+    /**
+     * Issue #49: Report capital cities in a selected region ordered by population
+     */
+    public ArrayList<City> getCapitalCitiesinRegion(String region) {
+        ArrayList<City> cityList = new ArrayList<>();
+        try {
+            if (region == null || region.trim().isEmpty()) {
+                throw new Exception("Region input cannot be empty or null");
+            }
+
+            Statement stmt = con.createStatement();
+            String strSelect =
+                    "SELECT city.Name AS capital_city, country.Name AS country_name, city.Population AS population " +
+                            "FROM country " +
+                            "JOIN city ON country.Capital = city.ID " +
+                            "WHERE country.Region = '" + region + "' " +
+                            "ORDER BY city.Population DESC";
+
+            ResultSet rset = stmt.executeQuery(strSelect);
+            while (rset.next()) {
+                City city = new City();
+                city.setName(rset.getString("capital_city"));
+                city.setPopulation(rset.getInt("population"));
+                cityList.add(city);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get capital cities in region: " + region);
+            return null;
+        }
+
+        System.out.print("\n");
+        System.out.println("================ Capital Cities in Region (" + region + ") Sorted by Population ================");
+        System.out.print("\n");
+        System.out.println(String.format("%-30s %-15s", "Capital City", "Population"));
+
+        for (City city : cityList) {
+            String city_string = String.format("%-30s %-15d", city.getName(), city.getPopulation());
+            System.out.println(city_string);
+        }
+
+        return cityList;
     }
 
     /**
