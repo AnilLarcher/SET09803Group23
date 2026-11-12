@@ -45,7 +45,7 @@ public class App {
         app.getCountriesInRegionByPopulation("Caribbean");
 
         //Method to display cities in the world by population
-        //app.getCitiesByPopulation();
+        app.getCitiesByPopulation();
 
         //Method to display cities in the world by population in a continent
         //app.getCitiesByPopulationinAContinent("Europe");
@@ -747,6 +747,59 @@ public class App {
         }
         return countryList;
     }
+
+    //Method to display cities in world by population
+    public ArrayList<City> getCitiesByPopulation() {
+        ArrayList<City> cityList = new ArrayList<>();
+        try {
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+
+            // Create string for SQL statement
+            String strSelect =
+                    "SELECT city.Name, country.Name, city.District, city.Population "
+                            + "FROM world.city , world.country "
+                            + "where country.Code = city.CountryCode "
+                            + "ORDER BY Population desc;";
+
+            // Execute SQL statement
+            ResultSet rset = stmt.executeQuery(strSelect);
+            // Process the result set and add to the list
+            while (rset.next()) {
+                City city = new City();
+                city.setName(rset.getString("city.name"));
+                city.setName(rset.getString("country.name"));
+                city.setDistrict(rset.getString("city.district"));
+                city.setPopulation(rset.getInt("city.population"));
+                cityList.add(city);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get city details");
+            return null;
+        }
+
+        // Print a blank line before the heading
+        System.out.print("\n");
+        // Print heading
+        System.out.println("Cities In The World Sorted By Population:");
+        // Print a blank line after the heading
+        System.out.print("\n");
+
+        // Print header
+        System.out.println(String.format("%-15s %-30s %-15s %-30s", "Name", "Country", "District", "Population"));
+        // Print each city's details
+        for (City city : cityList) {
+            String country_string =
+                    String.format("%-15s %-30s %-15s %-30s",
+                            city.getName(), city.getName(), city.getDistrict(), city.getPopulation());
+            System.out.println(country_string);
+        }
+        return cityList;
+
+    }
+
+
 
 
 }
