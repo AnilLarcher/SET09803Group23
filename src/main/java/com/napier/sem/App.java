@@ -69,7 +69,7 @@ public class App {
         //app.getTopNCitiesbyPopulationinRegion(7, "Latin America");
 
         //Method to display top N cities in a country by population
-        //app.getTopNCitiesbyPopinCountry(5, "Haiti");
+        app.getTopNCitiesbyPopinCountry(5, "Japan");
 
         //Method to display top N cities in a district by population
         //app.getTopNCitiesbyPopinDistrict(3, "Castries");
@@ -799,7 +799,90 @@ public class App {
 
     }
 
+    /**
+     * Issue #45: Display the top N populated cities in a selected country.
+     * The country can be given by name (e.g. "Japan") or code (e.g. "JPN").
+     */
+    public ArrayList<City> getTopNCitiesbyPopinCountry(Integer number, String country) {
+        //Input Validation
+        if (number == null || number <= 0) {
+            System.out.println("Fail! N must be a positive whole number (got: " + number + ")");
+            return null;
+        }
+        if (country == null || country.trim().isEmpty()) {
+            System.out.println("Fail! Country selection cannot be empty");
+            return null;
+        }
+        String selection = country.trim();
 
+        ArrayList<City> cityList = new ArrayList<>();
+        String countryName;
+        try {
+            // Check the selected country exists
+            String countrySelect = "SELECT Code, Name FROM country WHERE Code = UPPER(?) OR Name = ? LIMIT 1";
+            String countryCode;
+            try (PreparedStatement stmt = con.prepareStatement(countrySelect)) {
+                stmt.setString(1, selection);
+                stmt.setString(2, selection);
+                try (ResultSet rset = stmt.executeQuery()) {
+                    if (!rset.next()) {
+                        System.out.println("No country found for selection: " + selection);
+                        return null;
+                    }
+                    countryCode = rset.getString("Code");
+                    countryName = rset.getString("Name");
+                }
+            }
 
+            // Get the top N cities in that country
+            String strSelect =
+                    "SELECT city.Name, city.CountryCode, country.Name AS CountryName, city.District, city.Population "
+                            + "FROM city "
+                            + "JOIN country ON city.CountryCode = country.Code "
+                            + "WHERE city.CountryCode = ? "
+                            + "ORDER BY city.Population DESC "
+                            + "LIMIT ?";
+            try (PreparedStatement stmt = con.prepareStatement(strSelect)) {
+                stmt.setString(1, countryCode);
+                stmt.setInt(2, number);
+                try (ResultSet rset = stmt.executeQuery()) {
+                    while (rset.next()) {
+                        City city = new City();
+                        city.setName(rset.getString("Name"));
+                        city.setCountryCode(rset.getString("CountryCode"));
+                        city.setCountryName(rset.getString("CountryName"));
+                        city.setDistrict(rset.getString("District"));
+                        city.setPopulation(rset.getInt("Population"));
+                        cityList.add(city);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get city details");
+            return null;
+        }
+
+        // Print a blank line before the heading
+        System.out.print("\n");
+        // Print heading
+        System.out.println("============ Top " + number + " Cities In " + countryName + " Sorted By Population ============");
+        // Print a blank line after the heading
+        System.out.print("\n");
+
+        // Print header
+        System.out.println(String.format("%-35s %-30s %-25s %-15s", "Name", "Country", "District", "Population"));
+        // Print each city's details
+        for (City city : cityList) {
+            String city_string =
+                    String.format("%-35s %-30s %-25s %-15s",
+                            city.getName(), city.getCountryName(), city.getDistrict(), city.getPopulation());
+            System.out.println(city_string);
+        }
+        if (cityList.isEmpty()) {
+            System.out.println("No cities found for " + countryName);
+        }
+        return cityList;
+    }
 
 }

@@ -21,6 +21,11 @@ public class City
     private String countryCode;
 
     /**
+     * Name of the country the city is in (filled by reports that join the country table).
+     */
+    private String countryName;
+
+    /**
      * District the city is in.
      */
     private String district;
@@ -77,6 +82,16 @@ public class City
     public void setCountryCode(String countryCode)
     {
         this.countryCode = countryCode;
+    }
+
+    public String getCountryName()
+    {
+        return countryName;
+    }
+
+    public void setCountryName(String countryName)
+    {
+        this.countryName = countryName;
     }
 
     public String getDistrict()
