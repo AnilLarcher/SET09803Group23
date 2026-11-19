@@ -47,7 +47,7 @@ Kanban: GitHub Projects
 | 23 | The population of people, people living in cities, and people not living in cities in each continent. |     |            |
 | 24 | The population of people, people living in cities, and people not living in cities in each region.    |Yes     |![Screenshot 24 The population of people, people living in cities, and .png](Screenshots/Screenshot%2024%20The%20population%20of%20people%2C%20people%20living%20in%20cities%2C%20and%20.png)            |
 | 25 | The population of people, people living in cities, and people not living in cities in each country.   | Yes    |    ![Screenshot 25 population breakdown of country.png](Screenshots/Screenshot%2025%20population%20breakdown%20of%20country.png)        |
-| 26 | The population of the world.                                                                          |     |            |
+| 26 | The population of the world.                                                                          | Yes    |  ![Screenshot 26 population of the world.png](Screenshots/Screenshot%2026%20population%20of%20the%20world.png)          |
 | 27 | The population of a continent.                                                                        | Yes    | ![Screenshot 27 population of continent.png](Screenshots/Screenshot%2027%20population%20of%20continent.png)           |
 | 28 | The population of a region.                                                                           | Yes    | ![Screenshot 28 population of region.png](Screenshots/Screenshot%2028%20population%20of%20region.png)           |
 | 29 | The population of a country.                                                                          |     |            |
