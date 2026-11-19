@@ -381,60 +381,6 @@ public class App {
         }
     }
 
-    //Method to display the total number of people who speak
-    public ArrayList<Language> getLanguageSpeakers() {
-
-        ArrayList<Language> LanguageList = new ArrayList<>();
-        try {
-            // Create an SQL statement
-            Statement stmt = con.createStatement();
-            // Create string for SQL statement
-            String strSelect =
-                    "SELECT q.Language, q.TotalSpeakers, " +
-                            "(q.TotalSpeakers / (SELECT SUM(c.Population) FROM country c)) * 100 AS WorldPercent " +
-                            "FROM (SELECT cl.Language, SUM(c.Population) AS TotalSpeakers " +
-                            "FROM countrylanguage cl INNER JOIN country c ON cl.CountryCode = c.Code " +
-                            "WHERE cl.Language IN ('Chinese', 'English', 'Hindi', 'Spanish', 'Arabic') " +
-                            "GROUP BY cl.Language) AS q " +
-                            "ORDER BY WorldPercent DESC;";
-
-
-            // Execute SQL statement
-            ResultSet rset = stmt.executeQuery(strSelect);
-            // Process the result set and add to the list
-            while (rset.next()) {
-                Language language = new Language();
-                language.language = rset.getString("Language");
-                language.totalSpeakers = rset.getLong("TotalSpeakers");
-                language.percentage = rset.getLong("WorldPercent");
-                LanguageList.add(language);
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            System.out.println("Failed to get language details");
-            return null;
-        }
-
-        // Print a blank line before the heading
-        System.out.print("\n");
-        // Print heading
-        System.out.println("Total Number Of Speakers Per Language:");
-        // Print a blank line after the heading
-        System.out.print("\n");
-
-        // Print header
-        System.out.println(String.format("%-45s %-30s %-15s", "Language", "Total Speakers", "World Percentage of Speakers"));
-        // Print each city's details
-        for (Language language : LanguageList) {
-            String country_string =
-                    String.format("%-45s %-30s %-15s",
-                            language.language, language.totalSpeakers, language.percentage + "%");
-            System.out.println(country_string);
-        }
-        return LanguageList;
-
-    }
-
 
     //Method to display the top N populated countries in continent
     public ArrayList<Country> getTopNCountriesInContinentByPopulation(Integer number, String Continent) {
@@ -796,6 +742,60 @@ public class App {
             System.out.println(country_string);
         }
         return cityList;
+
+    }
+
+    //Method to display the total number of people who speak
+    public ArrayList<Language> getLanguageSpeakers() {
+
+        ArrayList<Language> LanguageList = new ArrayList<>();
+        try {
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+            // Create string for SQL statement
+            String strSelect =
+                    "SELECT q.Language, q.TotalSpeakers, " +
+                            "(q.TotalSpeakers / (SELECT SUM(c.Population) FROM country c)) * 100 AS WorldPercent " +
+                            "FROM (SELECT cl.Language, SUM(c.Population) AS TotalSpeakers " +
+                            "FROM countrylanguage cl INNER JOIN country c ON cl.CountryCode = c.Code " +
+                            "WHERE cl.Language IN ('Chinese', 'English', 'Hindi', 'Spanish', 'Arabic') " +
+                            "GROUP BY cl.Language) AS q " +
+                            "ORDER BY WorldPercent DESC;";
+
+
+            // Execute SQL statement
+            ResultSet rset = stmt.executeQuery(strSelect);
+            // Process the result set and add to the list
+            while (rset.next()) {
+                Language language = new Language();
+                language.language = rset.getString("Language");
+                language.totalSpeakers = rset.getLong("TotalSpeakers");
+                language.percentage = rset.getLong("WorldPercent");
+                LanguageList.add(language);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get language details");
+            return null;
+        }
+
+        // Print a blank line before the heading
+        System.out.print("\n");
+        // Print heading
+        System.out.println("Total Number Of Speakers Per Language:");
+        // Print a blank line after the heading
+        System.out.print("\n");
+
+        // Print header
+        System.out.println(String.format("%-45s %-30s %-15s", "Language", "Total Speakers", "World Percentage of Speakers"));
+        // Print each city's details
+        for (Language language : LanguageList) {
+            String country_string =
+                    String.format("%-45s %-30s %-15s",
+                            language.language, language.totalSpeakers, language.percentage + "%");
+            System.out.println(country_string);
+        }
+        return LanguageList;
 
     }
 
