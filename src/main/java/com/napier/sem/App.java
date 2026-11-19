@@ -109,10 +109,10 @@ public class App {
         //app.getTotalPopulationofContinent("Asia");
 
         //Method to display total population of a region
-        //app.getTotalPopulationofRegion("Caribbean");
+        app.getTotalPopulationofRegion("Caribbean");
 
         //Method to display total population of a country
-        //app.getTotalPopulationofCountry("Barbados");
+        app.getTotalPopulationofCountry("Barbados");
 
         //Method to display total population of a district
         app.getTotalPopulationofDistrict("Castries");
@@ -749,6 +749,35 @@ public class App {
         return cityList;
 
     }
+
+    //Method to display the total population of a region
+    public long getTotalPopulationofRegion(String Region) {
+        long totalPopulation = 0;
+        try {
+            //Input Validation
+            if (Region == null) throw new Exception ("Fail! Invalid input for Query");
+
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+            // Create string for SQL statement
+            String strSelect =
+                    "SELECT SUM(population) AS total_population FROM country WHERE region = '" + Region + "'";
+
+            // Execute SQL statement
+            ResultSet rset = stmt.executeQuery(strSelect);
+            // Process the result set
+            if (rset.next()) {
+                totalPopulation = rset.getLong("total_population");
+                System.out.println("Total population of all countries in " + Region + ":" + totalPopulation);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get total population");
+        }
+        return totalPopulation;
+    }
+
+
 
     //Method to display the total population of a city
     public long getTotalPopulationofCity(String City) {
