@@ -103,22 +103,22 @@ public class App {
         app.getPopulationofPeopleinCountry();
 
         //Method to display total world population
-        //app.getTotalPopulation();
+        app.getTotalPopulation();
 
         //Method to display total population of a continent
-        //app.getTotalPopulationofContinent("Asia");
+        app.getTotalPopulationofContinent("Asia");
 
         //Method to display total population of a region
-        //app.getTotalPopulationofRegion("Caribbean");
+        app.getTotalPopulationofRegion("Caribbean");
 
         //Method to display total population of a country
-        //app.getTotalPopulationofCountry("Barbados");
+        app.getTotalPopulationofCountry("Barbados");
 
         //Method to display total population of a district
         app.getTotalPopulationofDistrict("Castries");
 
         //Method to display total population of a city
-        //app.getTotalPopulationofCity("Georgetown");
+        app.getTotalPopulationofCity("Georgetown");
 
         //Method to display language speakers in the world
         app.getLanguageSpeakers();
@@ -502,8 +502,11 @@ public class App {
 
     /**
      * Issue #60: Report the total population of a selected district
+     *
+     * @return
      */
-    public void getTotalPopulationofDistrict(String districtName) {
+    public long getTotalPopulationofDistrict(String districtName) {
+        long totalPop = 0;
         try {
             String strSelect =
                     "SELECT District, SUM(Population) AS TotalPopulation " +
@@ -517,7 +520,7 @@ public class App {
             System.out.println("\n================ Population of Selected District ================\n");
             if (rset.next()) {
                 String district = rset.getString("District");
-                long totalPop = rset.getLong("TotalPopulation");
+                totalPop = rset.getLong("TotalPopulation");
                 System.out.println(String.format("%-20s %-15d", district, totalPop));
             } else {
                 System.out.println("No district found: " + districtName);
@@ -526,6 +529,7 @@ public class App {
             System.out.println(e.getMessage());
             System.out.println("Failed to get population report for district: " + districtName);
         }
+        return totalPop;
     }
 
     //Method to display the top N populated countries in continent
@@ -744,6 +748,121 @@ public class App {
         }
         return cityList;
 
+    }
+
+    //Method to display the total population of the world
+    public long getTotalPopulation() {
+        long totalPopulation = 0;
+        try {
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+            // Create string for SQL statement
+            String strSelect =
+                    "SELECT SUM(country.population) AS total_population "
+                            + "FROM country "
+                            + "JOIN city ON country.capital = city.ID";
+
+            // Execute SQL statement
+            ResultSet rset = stmt.executeQuery(strSelect);
+
+            // Print a blank line before showing results
+            System.out.print("\n");
+
+            // Process the result set
+            if (rset.next()) {
+                totalPopulation = rset.getLong("total_population");
+                System.out.println("Total population of all the world: " + totalPopulation);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get total population");
+        }
+        return totalPopulation;
+    }
+
+
+    //Method to display the total population of a continent
+    public long getTotalPopulationofContinent(String Continent) {
+        long totalPopulation = 0;
+        try {
+            //Input Validation
+            if (Continent == null) throw new Exception ("Fail! Invalid input for Query");
+
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+            // Create string for SQL statement
+            String strSelect =
+                    "SELECT SUM(population) AS total_population FROM country WHERE continent = '" + Continent + "'";
+
+            // Execute SQL statement
+            ResultSet rset = stmt.executeQuery(strSelect);
+            // Process the result set
+            if (rset.next()) {
+                totalPopulation = rset.getLong("total_population");
+                System.out.println("Total population of all countries in " + Continent + ":" + totalPopulation);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get total population");
+        }
+        return totalPopulation;
+    }
+
+
+
+    //Method to display the total population of a region
+    public long getTotalPopulationofRegion(String Region) {
+        long totalPopulation = 0;
+        try {
+            //Input Validation
+            if (Region == null) throw new Exception ("Fail! Invalid input for Query");
+
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+            // Create string for SQL statement
+            String strSelect =
+                    "SELECT SUM(population) AS total_population FROM country WHERE region = '" + Region + "'";
+
+            // Execute SQL statement
+            ResultSet rset = stmt.executeQuery(strSelect);
+            // Process the result set
+            if (rset.next()) {
+                totalPopulation = rset.getLong("total_population");
+                System.out.println("Total population of all countries in " + Region + ":" + totalPopulation);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get total population");
+        }
+        return totalPopulation;
+    }
+
+
+    //Method to display the total population of a city
+    public long getTotalPopulationofCity(String City) {
+        long totalPopulation = 0;
+        try {
+            //Input Validation
+            if (City == null) throw new Exception ("Fail! Invalid input for Query");
+
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+            // Create string for SQL statement
+            String strSelect =
+                    "SELECT SUM(population) AS total_population FROM city WHERE city.name = '" + City + "'";
+
+
+            ResultSet rset = stmt.executeQuery(strSelect);
+
+            if (rset.next()) {
+                totalPopulation = rset.getLong("total_population");
+                System.out.println("Total population of  " + City + " :" + totalPopulation);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get total population");
+        }
+        return totalPopulation;
     }
 
     //Method to display the total number of people who speak
