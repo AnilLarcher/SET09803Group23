@@ -129,6 +129,12 @@ public class App {
     }
 
 
+    public App() {}
+
+    App(Connection connection) {
+        this.con = connection;
+    }
+
     /**
      * Connection to database
      */
@@ -752,32 +758,17 @@ public class App {
 
     //Method to display the total population of the world
     public long getTotalPopulation() {
-        long totalPopulation = 0;
-        try {
-            // Create an SQL statement
-            Statement stmt = con.createStatement();
-            // Create string for SQL statement
-            String strSelect =
-                    "SELECT SUM(country.population) AS total_population "
-                            + "FROM country "
-                            + "JOIN city ON country.capital = city.ID";
-
-            // Execute SQL statement
-            ResultSet rset = stmt.executeQuery(strSelect);
-
-            // Print a blank line before showing results
-            System.out.print("\n");
-
-            // Process the result set
-            if (rset.next()) {
-                totalPopulation = rset.getLong("total_population");
-                System.out.println("Total population of all the world: " + totalPopulation);
-            }
+        String sql = "SELECT SUM(Population) FROM country";
+        try (Statement stmt = con.createStatement(); ResultSet rows = stmt.executeQuery(sql)) {
+            rows.next();
+            long population = rows.getLong(1);
+            System.out.println("Total population of all the world: " + population);
+            return population;
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println("Failed to get total population");
+            return 0;
         }
-        return totalPopulation;
     }
 
 
