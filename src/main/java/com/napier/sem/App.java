@@ -129,6 +129,12 @@ public class App {
     }
 
 
+    public App() {}
+
+    App(Connection connection) {
+        this.con = connection;
+    }
+
     /**
      * Connection to database
      */
@@ -181,6 +187,22 @@ public class App {
             } catch (Exception e) {
                 System.out.println("Error closing connection to database");
             }
+        }
+    }
+
+    private long getSelectedPopulation(String sql, String selection) {
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, selection);
+            try (ResultSet rows = stmt.executeQuery()) {
+                rows.next();
+                long population = rows.getLong(1);
+                System.out.println("Total population of all countries in " + selection + ": " + population);
+                return population;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get total population");
+            return 0;
         }
     }
 
@@ -782,30 +804,9 @@ public class App {
 
 
     //Method to display the total population of a continent
-    public long getTotalPopulationofContinent(String Continent) {
-        long totalPopulation = 0;
-        try {
-            //Input Validation
-            if (Continent == null) throw new Exception ("Fail! Invalid input for Query");
-
-            // Create an SQL statement
-            Statement stmt = con.createStatement();
-            // Create string for SQL statement
-            String strSelect =
-                    "SELECT SUM(population) AS total_population FROM country WHERE continent = '" + Continent + "'";
-
-            // Execute SQL statement
-            ResultSet rset = stmt.executeQuery(strSelect);
-            // Process the result set
-            if (rset.next()) {
-                totalPopulation = rset.getLong("total_population");
-                System.out.println("Total population of all countries in " + Continent + ":" + totalPopulation);
-            }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            System.out.println("Failed to get total population");
-        }
-        return totalPopulation;
+    public long getTotalPopulationofContinent(String continent) {
+        return getSelectedPopulation("SELECT SUM(Population) FROM country WHERE Continent = ?",
+                continent);
     }
 
 
