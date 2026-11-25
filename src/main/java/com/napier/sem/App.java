@@ -93,7 +93,7 @@ public class App {
         //app.getTopNCapitalCitiesinaRegion(3, "Caribbean");
 
         //Method to display the population of people in continents
-        //app.getPopulationofPeopleinContinent();
+        app.getPopulationofPeopleinContinent();
 
         //Method to display the population of people in region
         app.getPopulationofPeopleinRegion();
@@ -286,6 +286,63 @@ public class App {
             System.out.println(country_string);
         }
         return countryList;
+    }
+
+    //Method to display the population of people , people living in cities and people not living in cities in each continent
+    public ArrayList<PopulationReport> getPopulationofPeopleinContinent() {
+        ArrayList<PopulationReport> PopulationList = new ArrayList<>();
+        try {
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+            // Create string for SQL statement
+            String strSelect =
+                    "SELECT country.Continent, " +
+                            "SUM(city.Population) AS inCity, " +
+                            "SUM(DISTINCT(country.Population)) - SUM(city.Population) AS outCity, " +
+                            "SUM(DISTINCT(country.Population)) AS totalPopulation, " +
+                            "SUM(city.Population) / SUM(DISTINCT(country.Population)) * 100 AS inCityPercentage, " +
+                            "(SUM(DISTINCT(country.Population)) - SUM(city.Population)) / SUM(DISTINCT(country.Population)) * 100 AS outCityPercentage " +
+                            "FROM country " +
+                            "LEFT JOIN city ON country.Code = city.CountryCode " +
+                            "GROUP BY country.Continent " +
+                            "ORDER BY country.Continent";
+
+
+            // Execute SQL statement
+            ResultSet rset = stmt.executeQuery(strSelect);
+            // Process the result set and add to the list
+            while (rset.next()) {
+                PopulationReport population = new PopulationReport();
+                population.name = rset.getString("Continent");
+                population.totalPopulation = rset.getLong("totalPopulation");
+                population.cityPercentage = rset.getDouble("inCityPercentage");
+                population.cityPopulation = rset.getDouble("outCityPercentage");
+                PopulationList.add(population);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get capital city details");
+            return null;
+        }
+
+        // Print a blank line before the heading
+        System.out.print("\n");
+        // Print heading
+        System.out.println("Population of People Per Continent:");
+        // Print a blank line after the heading
+        System.out.print("\n");
+
+        // Print header
+        System.out.println(String.format("%-45s %-30s %-15s %-6s", "Name", "Total Population", "In Cities", "Not in Cities"));
+        // Print each city's details
+        for (PopulationReport population : PopulationList) {
+            String country_string =
+                    String.format("%-45s %-30s %-15s %-6s",
+                            population.name, population.totalPopulation, population.cityPercentage + "%", population.cityPopulation + "%");
+            System.out.println(country_string);
+        }
+        return PopulationList;
+
     }
 
     /**
