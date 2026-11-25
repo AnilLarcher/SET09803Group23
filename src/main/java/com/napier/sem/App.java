@@ -13,7 +13,6 @@ public class App {
      * Connection to MySQL database.
      */
     private Connection con = null;
-    private String countrySelection;
 
     public static void main(String[] args) {
         App app = new App();
@@ -112,13 +111,13 @@ public class App {
         app.getTotalPopulationofRegion("Caribbean");
 
         //Method to display total population of a country
-        app.getTotalPopulationofCountry("Barbados");
+        app.getTotalPopulationofCountry("Belize");
 
         //Method to display total population of a district
         app.getTotalPopulationofDistrict("Belize City");
 
         //Method to display total population of a city
-        app.getTotalPopulationofCity("Georgetown");
+        app.getTotalPopulationofCity("Castries");
 
         //Method to display language speakers in the world
         app.getLanguageSpeakers();
@@ -351,35 +350,31 @@ public class App {
         return countryList;
     }
 
-    public long getTotalPopulationofCountry(String Country) {
-        long TotalPopulation = 0;
-        try {
-            String selection = countrySelection == null ? "" : countrySelection.trim();
-            if (selection.isEmpty()) {
-                System.out.println("Country selection cannot be empty");
-
-            }
-
-            String sql = "SELECT Name, Population FROM country WHERE Code = UPPER(?) OR Name = ? LIMIT 1";
-            try (PreparedStatement stmt = con.prepareStatement(sql)) {
-                stmt.setString(1, selection);
-                stmt.setString(2, selection);
-                try (ResultSet rset = stmt.executeQuery()) {
-                    if (rset.next()) {
-                        System.out.println("Country Population - " + rset.getString("Name") + ": "
-                                + rset.getLong("Population"));
-                    } else {
-                        System.out.println("No country found for selection: " + selection);
-                    }
-                }
-            } catch (SQLException e) {
-                System.out.println("Failed to get selected country population");
-                System.out.println(e.getMessage());
-            }
-            return TotalPopulation;
-        } finally {
-
+    public long getTotalPopulationofCountry(String country) {
+        String selection = country == null ? "" : country.trim();
+        if (selection.isEmpty()) {
+            System.out.println("Country selection cannot be empty");
+            return 0;
         }
+
+        String sql = "SELECT Name, Population FROM country WHERE Code = UPPER(?) OR Name = ? LIMIT 1";
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, selection);
+            stmt.setString(2, selection);
+            try (ResultSet rset = stmt.executeQuery()) {
+                if (rset.next()) {
+                    long totalPopulation = rset.getLong("Population");
+                    System.out.println("Country Population - " + rset.getString("Name") + ": "
+                            + totalPopulation);
+                    return totalPopulation;
+                }
+                System.out.println("No country found for selection: " + selection);
+            }
+        } catch (SQLException e) {
+            System.out.println("Failed to get selected country population");
+            System.out.println(e.getMessage());
+        }
+        return 0;
     }
 
 

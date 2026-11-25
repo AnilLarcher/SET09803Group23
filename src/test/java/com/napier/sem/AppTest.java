@@ -27,8 +27,10 @@ public class AppTest {
     @Test
     void printCountryPopulationEmpty() {
         // Test handling of empty country selection
-       // app.printCountryPopulation("");
-        }
+        assertEquals(0, app.getTotalPopulationofCountry(""));
+        assertEquals(0, app.getTotalPopulationofCountry("   "));
+        assertEquals(0, app.getTotalPopulationofCountry(null));
+    }
 
     @Test
     void printContinentPopulationNull() {
