@@ -90,7 +90,7 @@ public class App {
         //app.getTopNCapitalCitiesinaContinent(5, "North America");
 
         //Method to display top N capital cities in a region by population
-        //app.getTopNCapitalCitiesinaRegion(3, "Caribbean");
+        app.getTopNCapitalCitiesinaRegion(6, "Caribbean");
 
         //Method to display the population of people in continents
         app.getPopulationofPeopleinContinent();
@@ -582,6 +582,61 @@ public class App {
             System.out.println("Failed to get population report for district: " + districtName);
         }
         return totalPop;
+    }
+
+    //Method to display top N capital cities in a region by population
+    public ArrayList<City> getTopNCapitalCitiesinaRegion(Integer number, String Region) {
+        ArrayList<City> CapitalCityList = new ArrayList<>();
+        try {
+            //Input Validation
+            if (number == null || number <= 0 || Region == null) throw new Exception ("Fail! Invalid input for Query");
+
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+            // Create string for SQL statement
+            String strSelect =
+                    "SELECT city.Name, country.Name, city.District, city.Population "
+                            + "FROM world.city "
+                            + "JOIN world.country ON city.ID = country.Capital "
+                            + "WHERE country.region = '" + Region + "'"
+                            + "ORDER BY Population DESC "
+                            + "LIMIT " + number;
+
+
+            // Execute SQL statement
+            ResultSet rset = stmt.executeQuery(strSelect);
+            // Process the result set and add to the list
+            while (rset.next()) {
+                City capitalcity = new City();
+                capitalcity.name = rset.getString("city.name");
+                capitalcity.countryCode = rset.getString("country.name");
+                capitalcity.population = rset.getInt("city.population");
+                CapitalCityList.add(capitalcity);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get capital city details");
+            return null;
+        }
+
+        // Print a blank line before the heading
+        System.out.print("\n");
+        // Print heading
+        System.out.println("Top N Capital Cities In A Region Sorted By Population:");
+        // Print a blank line after the heading
+        System.out.print("\n");
+
+        // Print header
+        System.out.println(String.format("%-15s %-30s %-15s", "Name", "Country", "Population"));
+        // Print each city's details
+        for (City capitalcity : CapitalCityList) {
+            String country_string =
+                    String.format("%-15s %-30s %-15s",
+                            capitalcity.name, capitalcity.countryCode, capitalcity.population);
+            System.out.println(country_string);
+        }
+        return CapitalCityList;
+
     }
 
     //Method to display the top N populated countries in continent
