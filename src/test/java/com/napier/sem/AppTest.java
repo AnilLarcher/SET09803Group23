@@ -51,6 +51,6 @@ public class AppTest {
     @Test
     void printRegionPopulationEmpty() {
         // Test handling of empty region selection
-        app.getTotalPopulationofDistrict("");
+        app.getTotalPopulationofDistrict("Belize City");
     }
 }

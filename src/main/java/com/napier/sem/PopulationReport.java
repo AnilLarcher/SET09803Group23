@@ -4,10 +4,10 @@ package com.napier.sem;
  * Represents population report statistics for a Continent, Region, or Country.
  */
 public class PopulationReport {
-    private String name;
-    private long totalPopulation;
-    private long cityPopulation;
-    private double cityPercentage;
+    public String name;
+    public long totalPopulation;
+    public double cityPopulation;
+    public double cityPercentage;
     private long nonCityPopulation;
     private double nonCityPercentage;
 
@@ -19,7 +19,7 @@ public class PopulationReport {
     public long getTotalPopulation() { return totalPopulation; }
     public void setTotalPopulation(long totalPopulation) { this.totalPopulation = totalPopulation; }
 
-    public long getCityPopulation() { return cityPopulation; }
+    public double getCityPopulation() { return cityPopulation; }
     public void setCityPopulation(long cityPopulation) { this.cityPopulation = cityPopulation; }
 
     public double getCityPercentage() { return cityPercentage; }

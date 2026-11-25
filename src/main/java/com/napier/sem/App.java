@@ -115,7 +115,7 @@ public class App {
         app.getTotalPopulationofCountry("Barbados");
 
         //Method to display total population of a district
-        app.getTotalPopulationofDistrict("Castries");
+        app.getTotalPopulationofDistrict("Belize City");
 
         //Method to display total population of a city
         app.getTotalPopulationofCity("Georgetown");
