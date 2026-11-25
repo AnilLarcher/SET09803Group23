@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 public class App {
     /**
@@ -127,6 +128,12 @@ public class App {
 
     }
 
+
+    public App() {}
+
+    App(Connection connection) {
+        this.con = connection;
+    }
 
     /**
      * Connection to database
@@ -946,30 +953,42 @@ public class App {
 
 
     //Method to display the total population of a city
-    public long getTotalPopulationofCity(String City) {
-        long totalPopulation = 0;
-        try {
-            //Input Validation
-            if (City == null) throw new Exception ("Fail! Invalid input for Query");
+    public long getTotalPopulationofCity(String city) {
+        return getCityPopulation("SELECT ID, Name, Population FROM city WHERE Name = ?", city);
+    }
 
-            // Create an SQL statement
-            Statement stmt = con.createStatement();
-            // Create string for SQL statement
-            String strSelect =
-                    "SELECT SUM(population) AS total_population FROM city WHERE city.name = '" + City + "'";
+    public long getTotalPopulationofCity(int cityId) {
+        return getCityPopulation("SELECT ID, Name, Population FROM city WHERE ID = ?", cityId);
+    }
 
-
-            ResultSet rset = stmt.executeQuery(strSelect);
-
-            if (rset.next()) {
-                totalPopulation = rset.getLong("total_population");
-                System.out.println("Total population of  " + City + " :" + totalPopulation);
+    private long getCityPopulation(String sql, Object selection) {
+        try (PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setObject(1, selection);
+            try (ResultSet rows = stmt.executeQuery()) {
+                if (!rows.next()) {
+                    System.out.println("No city found for selection: " + selection);
+                    return 0;
+                }
+                int id = rows.getInt("ID");
+                String name = rows.getString("Name");
+                long population = rows.getLong("Population");
+                if (rows.next()) {
+                    List<Integer> matches = new ArrayList<>();
+                    matches.add(id);
+                    do {
+                        matches.add(rows.getInt("ID"));
+                    } while (rows.next());
+                    System.out.println("Multiple cities named " + name + ". Select a city by ID: " + matches);
+                    return 0;
+                }
+                System.out.println("Total population of " + name + ": " + population);
+                return population;
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println("Failed to get total population");
+            return 0;
         }
-        return totalPopulation;
     }
 
     //Method to display the total number of people who speak
