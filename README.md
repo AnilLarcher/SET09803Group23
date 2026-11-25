@@ -50,7 +50,7 @@ Kanban: GitHub Projects
 | 26 | The population of the world.                                                                          | Yes    |  ![Screenshot 26 population of the world.png](Screenshots/Screenshot%2026%20population%20of%20the%20world.png)          |
 | 27 | The population of a continent.                                                                        | Yes    | ![Screenshot 27 population of continent.png](Screenshots/Screenshot%2027%20population%20of%20continent.png)           |
 | 28 | The population of a region.                                                                           | Yes    | ![Screenshot 28 population of region.png](Screenshots/Screenshot%2028%20population%20of%20region.png)           |
-| 29 | The population of a country.                                                                          |     |            |
+| 29 | The population of a country.                                                                          | Yes    |  ![Screenshot country poplation.png](Screenshots/Screenshot%20country%20poplation.png)          |
 | 30 | The population of a district.                                                                         |Yes  |![Screenshot The population of a district.png](Screenshots/Screenshot%20The%20population%20of%20a%20district.png)            |
-| 31 | The population of a city.                                                                             |     |            |
+| 31 | The population of a city.                                                                             | Yes    | ![Screenshot Total pop of a city.png](Screenshots/Screenshot%20Total%20pop%20of%20a%20city.png)           |
 | 32 | The Total number of Speakers per language.                                                            |Yes     |![Screenshot The Total number of Speakers per language.png](Screenshots/Screenshot%20The%20Total%20number%20of%20Speakers%20per%20language.png)            |
