@@ -128,6 +128,12 @@ public class App {
     }
 
 
+    public App() {}
+
+    App(Connection connection) {
+        this.con = connection;
+    }
+
     /**
      * Connection to database
      */
