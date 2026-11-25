@@ -128,6 +128,12 @@ public class App {
     }
 
 
+    public App() {}
+
+    App(Connection connection) {
+        this.con = connection;
+    }
+
     /**
      * Connection to database
      */
@@ -976,28 +982,24 @@ public class App {
     public ArrayList<Language> getLanguageSpeakers() {
 
         ArrayList<Language> LanguageList = new ArrayList<>();
-        try {
-            // Create an SQL statement
-            Statement stmt = con.createStatement();
-            // Create string for SQL statement
-            String strSelect =
-                    "SELECT q.Language, q.TotalSpeakers, " +
-                            "(q.TotalSpeakers / (SELECT SUM(c.Population) FROM country c)) * 100 AS WorldPercent " +
-                            "FROM (SELECT cl.Language, SUM(c.Population) AS TotalSpeakers " +
-                            "FROM countrylanguage cl INNER JOIN country c ON cl.CountryCode = c.Code " +
-                            "WHERE cl.Language IN ('Chinese', 'English', 'Hindi', 'Spanish', 'Arabic') " +
-                            "GROUP BY cl.Language) AS q " +
-                            "ORDER BY WorldPercent DESC;";
-
-
-            // Execute SQL statement
-            ResultSet rset = stmt.executeQuery(strSelect);
-            // Process the result set and add to the list
+        String sql = """
+                SELECT q.Language, q.TotalSpeakers,
+                       COALESCE(100.0 * q.TotalSpeakers / NULLIF((SELECT SUM(Population) FROM country), 0), 0)
+                           AS WorldPercent
+                FROM (
+                    SELECT cl.Language, ROUND(SUM(c.Population * cl.Percentage) / 100) AS TotalSpeakers
+                    FROM countrylanguage cl JOIN country c ON cl.CountryCode = c.Code
+                    WHERE cl.Language IN ('Chinese', 'English', 'Hindi', 'Spanish', 'Arabic')
+                    GROUP BY cl.Language
+                ) q
+                ORDER BY q.TotalSpeakers DESC, q.Language
+                """;
+        try (Statement stmt = con.createStatement(); ResultSet rset = stmt.executeQuery(sql)) {
             while (rset.next()) {
                 Language language = new Language();
-                language.language = rset.getString("Language");
-                language.totalSpeakers = rset.getLong("TotalSpeakers");
-                language.percentage = rset.getLong("WorldPercent");
+                language.setLanguage(rset.getString("Language"));
+                language.setTotalSpeakers(rset.getLong("TotalSpeakers"));
+                language.setPercentage(rset.getDouble("WorldPercent"));
                 LanguageList.add(language);
             }
         } catch (Exception e) {
