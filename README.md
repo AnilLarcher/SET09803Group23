@@ -44,7 +44,7 @@ Kanban: GitHub Projects
 | 20 | The top N populated capital cities in the world where N is provided by the user.                      |     |            |
 | 21 | The top N populated capital cities in a continent where N is provided by the user.                    |     |            |
 | 22 | The top N populated capital cities in a region where N is provided by the user.                       |     |            |
-| 23 | The population of people, people living in cities, and people not living in cities in each continent. |     |            |
+| 23 | The population of people, people living in cities, and people not living in cities in each continent. | Yes    | ![Screenshot population of continent report .png](Screenshots/Screenshot%20population%20of%20continent%20report%20.png)           |
 | 24 | The population of people, people living in cities, and people not living in cities in each region.    |Yes     |![Screenshot 24 The population of people, people living in cities, and .png](Screenshots/Screenshot%2024%20The%20population%20of%20people%2C%20people%20living%20in%20cities%2C%20and%20.png)            |
 | 25 | The population of people, people living in cities, and people not living in cities in each country.   | Yes    |    ![Screenshot 25 population breakdown of country.png](Screenshots/Screenshot%2025%20population%20breakdown%20of%20country.png)        |
 | 26 | The population of the world.                                                                          | Yes    |  ![Screenshot 26 population of the world.png](Screenshots/Screenshot%2026%20population%20of%20the%20world.png)          |
