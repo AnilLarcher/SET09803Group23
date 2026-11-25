@@ -66,7 +66,7 @@ public class App {
         //app.getTopNCitiesbyPopulationinContinent(10, "Asia");
 
         //Method to display top N cities in a region by population
-        //app.getTopNCitiesbyPopulationinRegion(7, "Latin America");
+        app.getTopNCitiesbyPopulationinRegion(7, "South America");
 
         //Method to display top N cities in a country by population
         //app.getTopNCitiesbyPopinCountry(5, "Haiti");
@@ -805,6 +805,62 @@ public class App {
         }
         return countryList;
     }
+
+    // Method to display the top N populated cities in a region
+    public ArrayList<City> getTopNCitiesbyPopulationinRegion(Integer number, String region) {
+        if (number == null || number <= 0 || region == null || region.trim().isEmpty()) {
+            throw new IllegalArgumentException("Fail! Invalid input for Query");
+        }
+
+        ArrayList<City> cityList = new ArrayList<>();
+        String strSelect =
+                "SELECT city.name AS city_name, country.name AS country_name, "
+                        + "city.district AS district, city.population AS population "
+                        + "FROM world.city "
+                        + "JOIN world.country ON country.code = city.CountryCode "
+                        + "WHERE country.region = ? "
+                        + "ORDER BY city.population DESC "
+                        + "LIMIT ?";
+
+        try (PreparedStatement stmt = con.prepareStatement(strSelect)) {
+            stmt.setString(1, region.trim());
+            stmt.setInt(2, number);
+
+            try (ResultSet rset = stmt.executeQuery()) {
+                while (rset.next()) {
+                    City city = new City();
+                    city.setName(rset.getString("city_name"));
+                    city.setCountryName(rset.getString("country_name"));
+                    city.setDistrict(rset.getString("district"));
+                    city.setPopulation(rset.getInt("population"));
+                    cityList.add(city);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Failed to get city details");
+            System.out.println(e.getMessage());
+            return null;
+        }
+
+        System.out.println("\nTop N Cities In The Region Sorted By Population:\n");
+        System.out.println(String.format(
+                "%-30s %-30s %-20s %-15s",
+                "Name", "Country", "District", "Population"));
+
+        for (City city : cityList) {
+            System.out.println(String.format(
+                    "%-30s %-30s %-20s %-15d",
+                    city.getName(), city.getCountryName(),
+                    city.getDistrict(), city.getPopulation()));
+        }
+
+        if (cityList.isEmpty()) {
+            System.out.println("No cities found for region: " + region.trim());
+        }
+
+        return cityList;
+    }
+
 
     //Method to display cities in world by population
     public ArrayList<City> getCitiesByPopulation() {

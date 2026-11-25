@@ -38,6 +38,22 @@ public class City
     }
 
     /**
+     * Name of the country the city is in.
+     */
+    private String countryName;
+
+    public String getCountryName()
+    {
+        return countryName;
+    }
+
+    public void setCountryName(String countryName)
+    {
+        this.countryName = countryName;
+    }
+
+
+    /**
      * Create a city with all fields set.
      */
     public City(int id, String name, String countryCode, String district, int population)
