@@ -13,12 +13,12 @@ public class City
     /**
      * City name.
      */
-    private String name;
+    public String name;
 
     /**
      * Code of the country the city is in.
      */
-    private String countryCode;
+    public String countryCode;
 
     /**
      * District the city is in.
@@ -28,7 +28,7 @@ public class City
     /**
      * Population of the city.
      */
-    private int population;
+    public int population;
 
     /**
      * Create an empty city.
